@@ -12,7 +12,7 @@ categories = ["graphics", "text-processing"]
 
 
 [dependencies]
-norad = "0.4"
+norad = { version = "0.4", features = ["rayon"] }
 structopt = "0.3"
 colored = "2.0"
 rayon = "1.5"

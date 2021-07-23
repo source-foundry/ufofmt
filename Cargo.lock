@@ -221,6 +221,7 @@ checksum = "41daef89380c3eb557bb6611c659c6122f9ddabf88d9a47a348704b8a9104e57"
 dependencies = [
  "plist",
  "quick-xml",
+ "rayon",
  "serde",
  "serde_derive",
  "serde_repr",
