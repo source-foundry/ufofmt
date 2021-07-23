@@ -25,7 +25,7 @@ fn main() {
     // UFO dir validity check
     // ~~~~~~~~~~~~~~~~~~~~~~
     let invalid_paths: Vec<&PathBuf> =
-        argv.ufopaths.par_iter().filter(|ufopath| !ufopath.exists()).collect();
+        argv.ufopaths.iter().filter(|ufopath| !ufopath.exists()).collect();
 
     if invalid_paths.len() > 0 {
         let error_str = "[ERROR]".red().bold();
