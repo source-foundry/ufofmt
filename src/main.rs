@@ -54,8 +54,8 @@ fn main() {
     }
 }
 
-/// Read/write roundtrip through the norad library. Returns a 1 if an error was encountered
-/// and 0 if no error was encountered
+/// Read/write roundtrip through the norad library. Returns Result that propagates
+/// norad::Error from the norad library
 fn format_ufo(ufopath: &Path) -> Result<(), norad::Error> {
     match Font::load(ufopath) {
         Ok(ufo) => match ufo.save(ufopath) {
