@@ -38,7 +38,7 @@ fn main() {
 
 /// Read/write roundtrip through the norad library. Returns a 1 if an error was encountered
 /// and 0 if no error was encountered
-fn format_ufo(ufopathstr: &String) -> u8 {
+fn format_ufo(ufopathstr: &str) -> u8 {
     let ufopath = PathBuf::from(ufopathstr);
     let error_str = "[ERROR]".red().bold();
     match Font::load(&ufopath) {
