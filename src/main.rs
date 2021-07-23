@@ -27,7 +27,7 @@ fn main() {
     let invalid_paths: Vec<&PathBuf> =
         argv.ufopaths.iter().filter(|ufopath| !ufopath.exists()).collect();
 
-    if invalid_paths.len() > 0 {
+    if !invalid_paths.is_empty() {
         let error_str = "[ERROR]".red().bold();
         for invalid_ufo_path in invalid_paths.iter() {
             eprintln!("{} {:?} is not a valid UFO directory path", error_str, invalid_ufo_path);
