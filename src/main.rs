@@ -1,4 +1,4 @@
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::time::Instant;
 
 use colored::*;
@@ -43,7 +43,8 @@ fn main() {
     // Source formatting execution
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~
     let now = Instant::now();
-    let results: Vec<u8> = argv.ufopaths.par_iter().map(|ufopath| format_ufo(ufopath)).collect();
+    let results: Vec<Result<_, norad::Error>> =
+        argv.ufopaths.par_iter().map(|ufopath| format_ufo(ufopath)).collect();
     let duration = now.elapsed().as_millis();
 
     if argv.time {
@@ -52,27 +53,27 @@ fn main() {
 
     // An error was identified if any process returned a u8 value of 1
     // If there was no error, the sum = 0
-    if results.par_iter().sum::<u8>() > 0 {
+    if results.iter().any(|v| v.is_err()) {
         std::process::exit(1);
     }
 }
 
 /// Read/write roundtrip through the norad library. Returns a 1 if an error was encountered
 /// and 0 if no error was encountered
-fn format_ufo(ufopath: &PathBuf) -> u8 {
+fn format_ufo(ufopath: &Path) -> Result<(), norad::Error> {
     match Font::load(ufopath) {
         Ok(ufo) => match ufo.save(ufopath) {
-            Ok(_) => 0,
+            Ok(_) => Ok(()),
             Err(e) => {
                 let error_str = "[ERROR]".red().bold();
                 eprintln!("{} Write error in {:?}: {}", error_str, ufopath, e);
-                1
+                Err(e)
             }
         },
         Err(e) => {
             let error_str = "[ERROR]".red().bold();
             eprintln!("{} Read error in {:?}: {}", error_str, ufopath, e);
-            1
+            Err(e)
         }
     }
 }
