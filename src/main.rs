@@ -13,8 +13,8 @@ struct Opt {
     #[structopt(short = "t", long = "time", help = "Display timing data")]
     time: bool,
 
-    /// Input files
-    #[structopt()]
+    /// UFO source file paths
+    #[structopt(help = "UFO source path(s)")]
     ufopaths: Vec<String>,
 }
 
