@@ -15,12 +15,33 @@ struct Opt {
 
     /// UFO source file paths
     #[structopt(help = "UFO source path(s)")]
-    ufopaths: Vec<String>,
+    ufopaths: Vec<PathBuf>,
 }
 
 fn main() {
     let argv = Opt::from_args();
 
+    // ~~~~~~~~~~~~~~~~~~~~~~
+    // UFO dir validity check
+    // ~~~~~~~~~~~~~~~~~~~~~~
+    let mut bad_ufo_path = false;
+    for ufo_testpath in &argv.ufopaths {
+        match ufo_testpath.exists() {
+            true => (),
+            false => {
+                let error_str = "[ERROR]".red().bold();
+                eprintln!("{} {:?} is not a valid UFO directory path", error_str, ufo_testpath);
+                bad_ufo_path = true;
+            }
+        }
+    }
+    if bad_ufo_path {
+        std::process::exit(1);
+    }
+
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // Source formatting execution
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~
     let now = Instant::now();
     let results: Vec<u8> = argv.ufopaths.par_iter().map(|ufopath| format_ufo(ufopath)).collect();
     let duration = now.elapsed().as_millis();
@@ -38,21 +59,19 @@ fn main() {
 
 /// Read/write roundtrip through the norad library. Returns a 1 if an error was encountered
 /// and 0 if no error was encountered
-fn format_ufo(ufopathstr: &str) -> u8 {
-    let ufopath = PathBuf::from(ufopathstr);
-
-    match Font::load(&ufopath) {
-        Ok(ufo) => match ufo.save(&ufopath) {
+fn format_ufo(ufopath: &PathBuf) -> u8 {
+    match Font::load(ufopath) {
+        Ok(ufo) => match ufo.save(ufopath) {
             Ok(_) => 0,
             Err(e) => {
                 let error_str = "[ERROR]".red().bold();
-                eprintln!("{} Write error in {:?}: {}", error_str, &ufopath, e);
+                eprintln!("{} Write error in {:?}: {}", error_str, ufopath, e);
                 1
             }
         },
         Err(e) => {
             let error_str = "[ERROR]".red().bold();
-            eprintln!("{} Read error in {:?}: {}", error_str, &ufopath, e);
+            eprintln!("{} Read error in {:?}: {}", error_str, ufopath, e);
             1
         }
     }
