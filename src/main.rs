@@ -40,16 +40,18 @@ fn main() {
 /// and 0 if no error was encountered
 fn format_ufo(ufopathstr: &str) -> u8 {
     let ufopath = PathBuf::from(ufopathstr);
-    let error_str = "[ERROR]".red().bold();
+
     match Font::load(&ufopath) {
         Ok(ufo) => match ufo.save(&ufopath) {
             Ok(_) => 0,
             Err(e) => {
+                let error_str = "[ERROR]".red().bold();
                 eprintln!("{} Write error in {:?}: {}", error_str, &ufopath, e);
                 1
             }
         },
         Err(e) => {
+            let error_str = "[ERROR]".red().bold();
             eprintln!("{} Read error in {:?}: {}", error_str, &ufopath, e);
             1
         }
