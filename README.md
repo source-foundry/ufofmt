@@ -6,7 +6,7 @@ A highly opinionated UFO source file formatter based on the [Norad library](http
 
 ```
 $ git clone https://github.com/source-foundry/ufofmt.git
-$ cd ufofmt && cargo install
+$ cd ufofmt && cargo install --path .
 ```
 
 This installation process installs the `ufofmt` executable.
