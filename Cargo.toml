@@ -1,6 +1,6 @@
 [package]
 name = "ufofmt"
-version = "0.1.3-dev.0"
+version = "0.2.0"
 edition = "2018"
 authors     = ["Chris Simpkins <chris@sourcefoundry.org>"]
 description = "A highly opinionated UFO source file formatter based on the Norad library"

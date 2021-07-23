@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.2.0
+
+- add UFO directory validity checks and informative error messages
+- refactor UFO dir path argument parsing to use PathBuf, skip unnecessary extra String->PathBuf instantiation step
+- refactor format_ufo function to take a PathBuf reference parameter (from String reference)
+
 ## v0.1.2
 
 - add Cargo.lock definitions
