@@ -24,18 +24,14 @@ fn main() {
     // ~~~~~~~~~~~~~~~~~~~~~~
     // UFO dir validity check
     // ~~~~~~~~~~~~~~~~~~~~~~
-    let mut bad_ufo_path = false;
-    for ufo_testpath in &argv.ufopaths {
-        match ufo_testpath.exists() {
-            true => (),
-            false => {
-                let error_str = "[ERROR]".red().bold();
-                eprintln!("{} {:?} is not a valid UFO directory path", error_str, ufo_testpath);
-                bad_ufo_path = true;
-            }
+    let invalid_paths: Vec<&PathBuf> =
+        argv.ufopaths.par_iter().filter(|ufopath| !ufopath.exists()).collect();
+
+    if invalid_paths.len() > 0 {
+        let error_str = "[ERROR]".red().bold();
+        for invalid_ufo_path in invalid_paths.iter() {
+            eprintln!("{} {:?} is not a valid UFO directory path", error_str, invalid_ufo_path);
         }
-    }
-    if bad_ufo_path {
         std::process::exit(1);
     }
 
