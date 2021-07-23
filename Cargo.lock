@@ -438,7 +438,7 @@ dependencies = [
 
 [[package]]
 name = "ufofmt"
-version = "0.1.2-dev.0"
+version = "0.1.2"
 dependencies = [
  "colored",
  "norad",

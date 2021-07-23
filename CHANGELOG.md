@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.1.2
+
+- add Cargo.lock definitions
+
 ## v0.1.1
 
 - improve help message for input path arguments
