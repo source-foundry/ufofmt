@@ -15,4 +15,7 @@ fmt:
 check-fmt:
 	cargo fmt --all -- --check
 
-.PHONY: all build-test build-release install fmt check-fmt
+check-clippy:
+	cargo clippy -- -D warnings
+
+.PHONY: all build-test build-release install fmt check-fmt check-clippy
