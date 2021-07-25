@@ -1,3 +1,33 @@
+//! # ufofmt
+//!
+//! A highly opinionated UFO source formatter.  Built with Norad.
+//!
+//! The `ufofmt` executable formats UFO source files with the specification
+//! defined in the Rust [norad library](https://github.com/linebender/norad).
+//!
+//! ## Resources
+//! - Source repository: [https://github.com/source-foundry/ufofmt](https://github.com/source-foundry/ufofmt)
+//! - License: [Apache License 2.0](https://github.com/source-foundry/ufofmt/blob/main/LICENSE)
+//! - [Issue tracker](https://github.com/source-foundry/ufofmt/issues)
+//! - [Changelog](https://github.com/source-foundry/ufofmt/blob/main/CHANGELOG.md)
+//! - [Developer documentation](https://github.com/source-foundry/ufofmt/blob/main/README.md)
+//!
+//! ## Installation
+//! Install the `ufofmt` executable with:
+//!
+//! ```
+//! $ cargo install ufofmt
+//! ```
+//!
+//! ## Usage
+//! The command line syntax is:
+//!
+//! ```
+//! $ ufofmt [OPTIONS] [UFO PATH 1] ... [UFO PATH n]
+//! ```
+//!
+//! Enter `ufofmt --help` to view help documentation with all available command line options.
+
 use std::path::{Path, PathBuf};
 use std::time::Instant;
 
