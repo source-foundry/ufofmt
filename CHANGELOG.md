@@ -1,5 +1,18 @@
 # Changelog
 
+## v0.3.0
+
+- activate rayon feature in norad library dependency
+- add new lib module
+- refactor error handling to lib sub-modules
+- check UFO dir path validity during format execution to avoid a separate loop
+- add unit tests
+- add `fs_extra` dev dependency (unit testing)
+- add `tempdir` dev dependency (unit testing)
+- add Mutator Sans sources to support testing (MIT License)
+- add rustdoc user documentation
+- add developer documentation on the repository README.md
+
 ## v0.2.0
 
 - add UFO directory validity checks and informative error messages
