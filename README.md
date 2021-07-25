@@ -4,26 +4,64 @@ A highly opinionated UFO source file formatter based on the [Norad library](http
 
 ## Installation
 
+The installation process installs the `ufofmt` executable.
+
+### User installation
+
+The following command installs the latest release build:
+
+```
+$ cargo install ufofmt
+```
+
+### Developer installation
+
+The following command installs a build from the latest commit in the main branch of the repository:
+
 ```
 $ git clone https://github.com/source-foundry/ufofmt.git
 $ cd ufofmt && cargo install --path .
 ```
-
-This installation process installs the `ufofmt` executable.
 
 ## Usage
 
 Pass one or more UFO source directory paths to the `ufofmt` executable:
 
 ```
-$ ufofmt [UFO PATH 1] ... [UFO PATH N]
+$ ufofmt [OPTIONS] [UFO PATH 1] ... [UFO PATH N]
 ```
 
-To view total execution duration data, include the `--time` flag:
+Use the command `ufofmt --help` to view all available command line options.
+
+## Contributing
+
+Contributions to the project are welcomed!  All contributions are accepted under the project license defined in the License section below.
+
+### Source contributions
+
+Test local changes in the executable with:
 
 ```
-$ ufofmt --time [UFO PATH 1] ... [UFO PATH N]
+$ cargo run -- [ARGS]
 ```
+
+Add tests to cover your source changes and run the test suite locally with:
+
+```
+$ cargo test
+```
+
+Please open a GitHub pull request with your change proposal.
+
+### Documentation contributions
+
+Please build and review your documentation changes locally with:
+
+```
+$ cargo doc --open
+```
+
+Please open a GitHub pull request with your change proposal.
 
 ## License
 
