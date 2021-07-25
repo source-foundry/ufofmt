@@ -16,3 +16,7 @@ norad = { version = "0.4", features = ["rayon"] }
 structopt = "0.3"
 colored = "2.0"
 rayon = "1.5"
+
+[dev-dependencies]
+fs_extra = "1.2.0"
+tempdir = "0.3.7"
