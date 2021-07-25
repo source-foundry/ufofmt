@@ -31,7 +31,7 @@ fn main() {
     // Source formatting execution
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~
     let now = Instant::now();
-    let results: Vec<Result<&Path, errors::UfofmtError>> =
+    let results: Vec<errors::Result<&Path>> =
         argv.ufopaths.par_iter().map(|ufopath| formatters::format_ufo(ufopath)).collect();
     let duration = now.elapsed().as_millis();
 
