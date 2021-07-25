@@ -14,6 +14,12 @@ The following command installs the latest release build:
 $ cargo install ufofmt
 ```
 
+Upgrade a previous installation to a new release version with:
+
+```
+$ cargo install --force ufofmt
+```
+
 ### Developer installation
 
 The following command installs a build from the latest commit in the main branch of the repository:
