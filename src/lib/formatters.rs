@@ -10,19 +10,19 @@ use crate::lib::validators;
 pub(crate) fn format_ufo(ufopath: &Path) -> errors::Result<&Path> {
     // validate UFO directory path request
     if validators::is_invalid_ufo_dir_path(ufopath) {
-        let err_msg = format!("{:?}: not a valid UFO directory path", ufopath);
+        let err_msg = format!("{}: not a valid UFO directory path", ufopath.display());
         return Err(std::io::Error::new(std::io::ErrorKind::NotFound, err_msg).into());
     }
     match Font::load(ufopath) {
         Ok(ufo) => match ufo.save(ufopath) {
             Ok(_) => Ok(ufopath),
             Err(e) => {
-                let err_msg = format!("{:?}: norad library write error: {}", ufopath, e);
+                let err_msg = format!("{}: norad library write error: {}", ufopath.display(), e);
                 Err(std::io::Error::new(std::io::ErrorKind::Other, err_msg).into())
             }
         },
         Err(e) => {
-            let err_msg = format!("{:?}: norad library read error: {}", ufopath, e);
+            let err_msg = format!("{}: norad library read error: {}", ufopath.display(), e);
             Err(std::io::Error::new(std::io::ErrorKind::Other, err_msg).into())
         }
     }
@@ -47,7 +47,7 @@ mod tests {
             Err(err) => {
                 assert_eq!(
                     err.to_string(),
-                    "\"totally/bogus/path/test.ufo\": not a valid UFO directory path"
+                    "totally/bogus/path/test.ufo: not a valid UFO directory path"
                 );
             }
         }
