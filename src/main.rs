@@ -19,6 +19,12 @@
 //! $ cargo install ufofmt
 //! ```
 //!
+//! Upgrade a previously installed `ufofmt` executable to the latest release with:
+//!
+//! ```
+//! $ cargo install --force ufofmt
+//!```
+//!
 //! ## Usage
 //! The command line syntax is:
 //!
