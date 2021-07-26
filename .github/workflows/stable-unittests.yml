@@ -1,7 +1,7 @@
 on:
   push:
     branches:
-      - master
+      - main
       - "test/**" # Push events to branches matching refs/heads/test/[ANYTHING]
       - "test-*" # Push events to branches matching refs/heads/test-[ANYTHING]
   pull_request:
