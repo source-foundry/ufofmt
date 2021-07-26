@@ -1,5 +1,9 @@
 # ufofmt
 
+![crates.io](https://img.shields.io/crates/v/ufofmt.svg)
+[![stable toolchain unit tests](https://github.com/source-foundry/ufofmt/actions/workflows/stable-unittests.yml/badge.svg)](https://github.com/source-foundry/ufofmt/actions/workflows/stable-unittests.yml)
+[![beta toolchain unit tests](https://github.com/source-foundry/ufofmt/actions/workflows/beta-unittests.yml/badge.svg)](https://github.com/source-foundry/ufofmt/actions/workflows/beta-unittests.yml)
+
 A highly opinionated UFO source file formatter based on the [Norad library](https://github.com/linebender/norad)
 
 ## Installation
