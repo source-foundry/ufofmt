@@ -75,7 +75,7 @@ fn main() {
     for result in &results {
         match result {
             Ok(path) => {
-                println!("{} {:?}", &ok_indicator, path);
+                println!("{} {}", &ok_indicator, path.display());
             }
             Err(err) => {
                 errors::print_error(err);
