@@ -1,23 +1,38 @@
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
 use norad::Font;
 
 use crate::lib::errors;
+use crate::lib::utils;
 use crate::lib::validators;
 
 /// Read/write roundtrip through the norad library. Returns Result with successful
 /// &PathBuf path write or error
-pub(crate) fn format_ufo(ufopath: &Path) -> errors::Result<&Path> {
+pub(crate) fn format_ufo(
+    ufopath: &Path,
+    unique_filename: &Option<String>,
+    unique_extension: &Option<String>,
+) -> errors::Result<PathBuf> {
     // validate UFO directory path request
     if validators::is_invalid_ufo_dir_path(ufopath) {
         let err_msg = format!("{}: not a valid UFO directory path", ufopath.display());
         return Err(std::io::Error::new(std::io::ErrorKind::NotFound, err_msg).into());
     }
+    // define out directory path based on optional user-specified command line options
+    let outpath;
+    if unique_filename.is_some() || unique_extension.is_some() {
+        outpath = utils::get_ufo_outpath(ufopath, unique_filename, unique_extension);
+    } else {
+        // if the user did not specify options for custom file name or custom
+        // extension, then write in place over the in path
+        outpath = ufopath.to_path_buf();
+    }
+
     match Font::load(ufopath) {
-        Ok(ufo) => match ufo.save(ufopath) {
-            Ok(_) => Ok(ufopath),
+        Ok(ufo) => match ufo.save(&outpath) {
+            Ok(_) => Ok(outpath),
             Err(e) => {
-                let err_msg = format!("{}: norad library write error: {}", ufopath.display(), e);
+                let err_msg = format!("{}: norad library write error: {}", &outpath.display(), e);
                 Err(std::io::Error::new(std::io::ErrorKind::Other, err_msg).into())
             }
         },
@@ -40,7 +55,7 @@ mod tests {
     #[test]
     fn test_format_ufo_invalid_dir_path() {
         let invalid_path = Path::new("totally/bogus/path/test.ufo");
-        let res = format_ufo(invalid_path);
+        let res = format_ufo(invalid_path, &None, &None);
         assert!(res.is_err());
         match res {
             Ok(x) => panic!("failed with unexpected test result: {:?}", x),
@@ -66,7 +81,7 @@ mod tests {
         let test_ufo_path = tmp_dir.path().join("MutatorSansBoldCondensed.ufo");
 
         // test run of formatter across valid UFO sources
-        let res_ufo_format = format_ufo(&test_ufo_path);
+        let res_ufo_format = format_ufo(&test_ufo_path, &None, &None);
         assert!(res_ufo_format.is_ok());
         assert_eq!(format!("{:?}", res_ufo_format.unwrap()), format!("{:?}", &test_ufo_path));
 

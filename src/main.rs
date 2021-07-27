@@ -34,7 +34,7 @@
 //!
 //! Enter `ufofmt --help` to view help documentation with all available command line options.
 
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 use std::time::Instant;
 
 use rayon::prelude::*;
@@ -53,6 +53,22 @@ struct Opt {
     #[structopt(short = "t", long = "time", help = "Display timing data")]
     time: bool,
 
+    /// Define a unique directory write path extension
+    #[structopt(
+        name = "UNIQUE_EXTENSION",
+        long = "out-ext",
+        help = "Define a unique directory write path extension"
+    )]
+    uniqueext: Option<String>,
+
+    /// Append a unique directory write path name before the extension
+    #[structopt(
+        name = "UNIQUE_FILENAME_STRING",
+        long = "out-name",
+        help = "Append a unique directory write path name before the extension"
+    )]
+    uniquename: Option<String>,
+
     /// UFO source file paths
     #[structopt(help = "UFO source path(s)")]
     ufopaths: Vec<PathBuf>,
@@ -65,8 +81,11 @@ fn main() {
     // Source formatting execution
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~
     let now = Instant::now();
-    let results: Vec<errors::Result<&Path>> =
-        argv.ufopaths.par_iter().map(|ufopath| formatters::format_ufo(ufopath)).collect();
+    let results: Vec<errors::Result<PathBuf>> = argv
+        .ufopaths
+        .par_iter()
+        .map(|ufopath| formatters::format_ufo(ufopath, &argv.uniquename, &argv.uniqueext))
+        .collect();
     let duration = now.elapsed().as_millis();
 
     for result in &results {
