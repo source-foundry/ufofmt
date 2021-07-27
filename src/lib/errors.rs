@@ -12,7 +12,7 @@ lazy_static! {
 }
 
 pub(crate) fn print_error(err: &UfofmtError) {
-    let _ = writeln!(stderr(), "{:?} {}", *ERROR_INDICATOR, err);
+    let _ = writeln!(stderr(), "{} {}", *ERROR_INDICATOR, err);
 }
 
 #[cfg(test)]
