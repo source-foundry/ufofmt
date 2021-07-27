@@ -8,7 +8,7 @@ pub(crate) fn get_ufo_outpath(
 ) -> PathBuf {
     let original_basepath = match user_ufo_path.parent() {
         Some(opar) => opar,
-        None => &Path::new("."),
+        None => Path::new("."),
     };
 
     let new_basepath = PathBuf::from(original_basepath);
@@ -27,14 +27,14 @@ pub(crate) fn get_ufo_outpath(
 
     let original_extension = match user_ufo_path.extension() {
         Some(oext) => oext,
-        None => &OsStr::new(""),
+        None => OsStr::new(""),
     };
 
     match user_unique_extension {
         Some(unique_ext) => {
             // create the new extension string
             if unique_ext.starts_with('.') {
-                new_outpath.set_extension(unique_ext.strip_prefix(".").unwrap())
+                new_outpath.set_extension(unique_ext.strip_prefix('.').unwrap())
             } else {
                 new_outpath.set_extension(unique_ext)
             }
