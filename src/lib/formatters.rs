@@ -66,12 +66,13 @@ mod tests {
                 );
             }
         }
+        assert!(!invalid_path.exists());
     }
 
     #[test]
     fn test_format_ufo_invalid_dir_path_with_custom_names() {
         let invalid_path = Path::new("totally/bogus/path/test.ufo");
-        let res = format_ufo(invalid_path, &Some("test".to_string()), &Some(".test".to_string()));
+        let res = format_ufo(invalid_path, &Some("_new".to_string()), &Some(".test".to_string()));
         assert!(res.is_err());
         match res {
             Ok(x) => panic!("failed with unexpected test result: {:?}", x),
@@ -82,6 +83,8 @@ mod tests {
                 );
             }
         }
+        let new_path = Path::new("totally/bogus/path/test_new.test");
+        assert!(!new_path.exists());
     }
 
     #[test]
@@ -100,6 +103,7 @@ mod tests {
         let res_ufo_format = format_ufo(&test_ufo_path, &None, &None);
         assert!(res_ufo_format.is_ok());
         assert_eq!(format!("{:?}", res_ufo_format.unwrap()), format!("{:?}", &test_ufo_path));
+        assert!(&test_ufo_path.exists());
 
         Ok(())
     }
