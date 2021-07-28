@@ -511,6 +511,7 @@ version = "0.3.1-dev.0"
 dependencies = [
  "colored",
  "fs_extra",
+ "lazy_static",
  "norad",
  "rayon",
  "structopt",

@@ -1,13 +1,18 @@
 use std::io::{stderr, Write};
 
 use colored::*;
+use lazy_static::lazy_static;
 
 pub type UfofmtError = Box<dyn std::error::Error + Send + Sync + 'static>;
 pub type Result<T> = std::result::Result<T, UfofmtError>;
 
+lazy_static! {
+    pub static ref ERROR_INDICATOR: ColoredString = "[ERROR]".red().bold();
+    pub static ref OK_INDICATOR: ColoredString = "[OK]".green().bold();
+}
+
 pub(crate) fn print_error(err: &UfofmtError) {
-    let error_indicator = "[ERROR]".red().bold();
-    let _ = writeln!(stderr(), "{} {}", error_indicator, err);
+    let _ = writeln!(stderr(), "{} {}", *ERROR_INDICATOR, err);
 }
 
 #[cfg(test)]

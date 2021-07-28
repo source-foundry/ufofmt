@@ -37,8 +37,6 @@
 use std::path::{Path, PathBuf};
 use std::time::Instant;
 
-use colored::*;
-
 use rayon::prelude::*;
 use structopt::StructOpt;
 
@@ -71,11 +69,10 @@ fn main() {
         argv.ufopaths.par_iter().map(|ufopath| formatters::format_ufo(ufopath)).collect();
     let duration = now.elapsed().as_millis();
 
-    let ok_indicator = "[OK]".green().bold();
     for result in &results {
         match result {
             Ok(path) => {
-                println!("{} {}", &ok_indicator, path.display());
+                println!("{} {}", *errors::OK_INDICATOR, path.display());
             }
             Err(err) => {
                 errors::print_error(err);
