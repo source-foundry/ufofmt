@@ -94,7 +94,7 @@ fn main() {
                 println!("{} {}", *errors::OK_INDICATOR, path.display());
             }
             Err(err) => {
-                errors::print_error(err);
+                eprintln!("{} {}", *errors::ERROR_INDICATOR, err);
             }
         }
     }

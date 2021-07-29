@@ -2,9 +2,8 @@ use std::path::{Path, PathBuf};
 
 use norad::Font;
 
-use crate::lib::errors;
+use crate::lib::errors::{Result, UfofmtError, UfofmtErrorKind};
 use crate::lib::utils;
-use crate::lib::validators;
 
 /// Read/write roundtrip through the norad library. Returns Result with successful
 /// &PathBuf path write or error
@@ -12,11 +11,13 @@ pub(crate) fn format_ufo(
     ufopath: &Path,
     unique_filename: &Option<String>,
     unique_extension: &Option<String>,
-) -> errors::Result<PathBuf> {
+) -> Result<PathBuf> {
     // validate UFO directory path request
-    if validators::is_invalid_ufo_dir_path(ufopath) {
-        let err_msg = format!("{}: not a valid UFO directory path", ufopath.display());
-        return Err(std::io::Error::new(std::io::ErrorKind::NotFound, err_msg).into());
+    if !ufopath.exists() {
+        return Err(UfofmtError::new(
+            UfofmtErrorKind::InvalidPath,
+            &format!("{} is not a valid directory path", ufopath.display()),
+        ));
     }
     // define out directory path based on optional user-specified command line options
     let outpath;
@@ -31,14 +32,13 @@ pub(crate) fn format_ufo(
     match Font::load(ufopath) {
         Ok(ufo) => match ufo.save(&outpath) {
             Ok(_) => Ok(outpath),
-            Err(e) => {
-                let err_msg = format!("{}: norad library write error: {}", &outpath.display(), e);
-                Err(std::io::Error::new(std::io::ErrorKind::Other, err_msg).into())
-            }
+            Err(e) => Err(UfofmtError::new(
+                UfofmtErrorKind::Write,
+                &format!("{}: {}", &outpath.display(), e),
+            )),
         },
         Err(e) => {
-            let err_msg = format!("{}: norad library read error: {}", ufopath.display(), e);
-            Err(std::io::Error::new(std::io::ErrorKind::Other, err_msg).into())
+            Err(UfofmtError::new(UfofmtErrorKind::Read, &format!("{}: {}", &ufopath.display(), e)))
         }
     }
 }
@@ -56,13 +56,13 @@ mod tests {
     fn test_format_ufo_invalid_dir_path_default() {
         let invalid_path = Path::new("totally/bogus/path/test.ufo");
         let res = format_ufo(invalid_path, &None, &None);
-        assert!(res.is_err());
         match res {
             Ok(x) => panic!("failed with unexpected test result: {:?}", x),
             Err(err) => {
+                assert_eq!(err.kind, UfofmtErrorKind::InvalidPath);
                 assert_eq!(
                     err.to_string(),
-                    "totally/bogus/path/test.ufo: not a valid UFO directory path"
+                    "invalid path error: totally/bogus/path/test.ufo is not a valid directory path",
                 );
             }
         }
@@ -73,13 +73,13 @@ mod tests {
     fn test_format_ufo_invalid_dir_path_with_custom_names() {
         let invalid_path = Path::new("totally/bogus/path/test.ufo");
         let res = format_ufo(invalid_path, &Some("_new".to_string()), &Some(".test".to_string()));
-        assert!(res.is_err());
         match res {
             Ok(x) => panic!("failed with unexpected test result: {:?}", x),
             Err(err) => {
+                assert_eq!(err.kind, UfofmtErrorKind::InvalidPath);
                 assert_eq!(
                     err.to_string(),
-                    "totally/bogus/path/test.ufo: not a valid UFO directory path"
+                    "invalid path error: totally/bogus/path/test.ufo is not a valid directory path"
                 );
             }
         }
@@ -88,9 +88,9 @@ mod tests {
     }
 
     #[test]
-    fn test_format_ufo_valid_dir_path_default() -> Result<(), std::io::Error> {
+    fn test_format_ufo_valid_dir_path_default() {
         // setup
-        let tmp_dir = tempdir::TempDir::new("test")?;
+        let tmp_dir = tempdir::TempDir::new("test").unwrap();
         let src_ufo_path = Path::new("testdata/ufo/MutatorSansBoldCondensed.ufo");
         assert!(&src_ufo_path.exists());
         assert!(&tmp_dir.path().exists());
@@ -104,14 +104,12 @@ mod tests {
         assert!(res_ufo_format.is_ok());
         assert_eq!(format!("{:?}", res_ufo_format.unwrap()), format!("{:?}", &test_ufo_path));
         assert!(&test_ufo_path.exists());
-
-        Ok(())
     }
 
     #[test]
-    fn test_format_ufo_valid_dir_path_with_custom_names() -> Result<(), std::io::Error> {
+    fn test_format_ufo_valid_dir_path_with_custom_names() {
         // setup
-        let tmp_dir = tempdir::TempDir::new("test")?;
+        let tmp_dir = tempdir::TempDir::new("test").unwrap();
         let src_ufo_path = Path::new("testdata/ufo/MutatorSansBoldCondensed.ufo");
         assert!(&src_ufo_path.exists());
         assert!(&tmp_dir.path().exists());
@@ -127,7 +125,5 @@ mod tests {
         let expected_path = tmp_dir.path().join("MutatorSansBoldCondensed_new.test");
         assert_eq!(format!("{:?}", res_ufo_format.unwrap()), format!("{:?}", expected_path));
         assert!(expected_path.exists() && expected_path.is_dir());
-
-        Ok(())
     }
 }
