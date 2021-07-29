@@ -38,7 +38,7 @@ impl std::error::Error for UfofmtError {}
 impl UfofmtError {
     // Associated functions
     pub(crate) fn new(kind: UfofmtErrorKind, message: &str) -> Self {
-        Self { kind, message: message.to_string() }
+        Self { kind, message: message.to_owned() }
     }
 }
 
