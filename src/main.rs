@@ -49,11 +49,11 @@ use crate::lib::formatters;
 #[derive(StructOpt, Debug)]
 #[structopt(about = "A fast, flexible UFO source formatter.  Built with Norad.")]
 struct Opt {
-    /// Format XML declaration with single quotes
+    /// Format XML declaration attributes with single quotes
     #[structopt(
         short = "s",
         long = "singlequotes",
-        help = "Format XML declaration with single quotes"
+        help = "Format XML declaration attributes with single quotes"
     )]
     singlequotes: bool,
 
