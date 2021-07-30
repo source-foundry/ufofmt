@@ -47,7 +47,7 @@ pub(crate) fn format_ufo(
                 for filepath in filepaths {
                     let singlequote_res = write_bytes_to_file(
                         &filepath,
-                        &format_single_quotes(&mut io::read_file_to_bytes(&filepath)?),
+                        format_single_quotes(&mut io::read_file_to_bytes(&filepath)?),
                     );
                     match singlequote_res {
                         Ok(_) => (),
