@@ -57,7 +57,7 @@ pub(crate) fn format_ufo(
                 // return the UFO path wrapped in a Result
                 Ok(p)
             }
-            Err(e) => return Err(e),
+            Err(e) => Err(e),
         }
     } else {
         norad_rw_res

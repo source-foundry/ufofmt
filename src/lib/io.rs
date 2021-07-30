@@ -33,7 +33,7 @@ pub(crate) fn read_file_to_bytes(filepath: &Path) -> Result<Vec<u8>> {
     }
 }
 
-pub(crate) fn write_bytes_to_file(filepath: &Path, contents: &Vec<u8>) -> Result<()> {
+pub(crate) fn write_bytes_to_file(filepath: &Path, contents: &[u8]) -> Result<()> {
     match fs::write(filepath, contents) {
         Ok(_) => Ok(()),
         Err(e) => Err(Error::Write(filepath.into(), e.to_string())),
