@@ -1,6 +1,6 @@
 //! # ufofmt
 //!
-//! A highly opinionated UFO source formatter.  Built with Norad.
+//! A fast, flexible UFO source formatter.  Built with Norad.
 //!
 //! The `ufofmt` executable formats UFO source files with the specification
 //! defined in the Rust [norad library](https://github.com/linebender/norad).
@@ -47,7 +47,7 @@ use crate::lib::errors;
 use crate::lib::formatters;
 
 #[derive(StructOpt, Debug)]
-#[structopt(about = "A highly opinionated UFO source formatter.  Built with Norad.")]
+#[structopt(about = "A fast, flexible UFO source formatter.  Built with Norad.")]
 struct Opt {
     /// Display timing data
     #[structopt(short = "t", long = "time", help = "Display timing data")]
