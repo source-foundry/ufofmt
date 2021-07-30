@@ -17,6 +17,8 @@ pub(crate) enum Error {
     InvalidPath(PathBuf),
     NoradRead(PathBuf, norad::Error),
     NoradWrite(PathBuf, norad::Error),
+    Read(PathBuf, String),
+    Write(PathBuf, String),
 }
 
 impl fmt::Display for Error {
@@ -30,6 +32,12 @@ impl fmt::Display for Error {
             }
             Error::InvalidPath(p) => {
                 write!(f, "invalid path error: {} was not found", p.display())
+            }
+            Error::Read(p, s) => {
+                write!(f, "read error: {}: {}", p.display(), s)
+            }
+            Error::Write(p, s) => {
+                write!(f, "write error: {}: {}", p.display(), s)
             }
         }
     }
