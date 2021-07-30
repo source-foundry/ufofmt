@@ -2,7 +2,7 @@ use std::path::{Path, PathBuf};
 
 use norad::Font;
 
-use crate::lib::errors::{Result, UfofmtError, UfofmtErrorKind};
+use crate::lib::errors::{Error, Result};
 use crate::lib::utils;
 
 /// Read/write roundtrip through the norad library. Returns Result with successful
@@ -14,10 +14,7 @@ pub(crate) fn format_ufo(
 ) -> Result<PathBuf> {
     // validate UFO directory path request
     if !ufopath.exists() {
-        return Err(UfofmtError::new(
-            UfofmtErrorKind::InvalidPath,
-            &format!("{} is not a valid directory path", ufopath.display()),
-        ));
+        return Err(Error::InvalidPath(ufopath.into()));
     }
     // define out directory path based on optional user-specified command line options
     let outpath;
@@ -32,14 +29,9 @@ pub(crate) fn format_ufo(
     match Font::load(ufopath) {
         Ok(ufo) => match ufo.save(&outpath) {
             Ok(_) => Ok(outpath),
-            Err(e) => Err(UfofmtError::new(
-                UfofmtErrorKind::Write,
-                &format!("{}: {}", &outpath.display(), e),
-            )),
+            Err(e) => Err(Error::NoradWrite(outpath, e)),
         },
-        Err(e) => {
-            Err(UfofmtError::new(UfofmtErrorKind::Read, &format!("{}: {}", &ufopath.display(), e)))
-        }
+        Err(e) => Err(Error::NoradRead(ufopath.into(), e)),
     }
 }
 
@@ -59,11 +51,7 @@ mod tests {
         match res {
             Ok(x) => panic!("failed with unexpected test result: {:?}", x),
             Err(err) => {
-                assert_eq!(err.kind, UfofmtErrorKind::InvalidPath);
-                assert_eq!(
-                    err.to_string(),
-                    "invalid path error: totally/bogus/path/test.ufo is not a valid directory path",
-                );
+                assert!(matches!(err, Error::InvalidPath(_)));
             }
         }
         assert!(!invalid_path.exists());
@@ -76,11 +64,7 @@ mod tests {
         match res {
             Ok(x) => panic!("failed with unexpected test result: {:?}", x),
             Err(err) => {
-                assert_eq!(err.kind, UfofmtErrorKind::InvalidPath);
-                assert_eq!(
-                    err.to_string(),
-                    "invalid path error: totally/bogus/path/test.ufo is not a valid directory path"
-                );
+                assert!(matches!(err, Error::InvalidPath(_)));
             }
         }
         let new_path = Path::new("totally/bogus/path/test_new.test");
