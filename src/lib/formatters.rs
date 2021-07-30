@@ -6,7 +6,7 @@ use crate::lib::errors::{Error, Result};
 use crate::lib::io;
 use crate::lib::utils;
 
-use super::io::write_bytes_to_file;
+use crate::lib::io::{read_file_to_bytes, write_bytes_to_file};
 
 /// Read/write roundtrip through the norad library. Returns Result with successful
 /// &PathBuf path write or error
@@ -47,7 +47,7 @@ pub(crate) fn format_ufo(
                 for filepath in filepaths {
                     let singlequote_res = write_bytes_to_file(
                         &filepath,
-                        format_single_quotes(&mut io::read_file_to_bytes(&filepath)?),
+                        format_single_quotes(&mut read_file_to_bytes(&filepath)?),
                     );
                     match singlequote_res {
                         Ok(_) => (),
