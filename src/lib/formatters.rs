@@ -1,6 +1,7 @@
 use std::path::{Path, PathBuf};
 
 use norad::Font;
+use rayon::prelude::*;
 
 use crate::lib::errors::{Error, Result};
 use crate::lib::io;
@@ -42,17 +43,17 @@ pub(crate) fn format_ufo(
         match norad_rw_res {
             Ok(p) => {
                 let filepaths = io::walk_dir_for_plist_and_glif(&p);
-                for filepath in filepaths {
-                    let singlequote_res = io::write_bytes_to_file(
-                        &filepath,
-                        format_single_quotes(&mut io::read_file_to_bytes(&filepath)?),
-                    );
-                    match singlequote_res {
+                let singlequote_res = filepaths
+                    .par_iter()
+                    .map(|filepath| run_single_quotes_formatter(filepath))
+                    .collect::<Vec<Result<()>>>();
+
+                for res in singlequote_res.into_iter() {
+                    match res {
                         Ok(_) => (),
                         Err(e) => return Err(e),
                     }
                 }
-                // return the UFO path wrapped in a Result
                 Ok(p)
             }
             Err(e) => Err(e),
@@ -60,6 +61,10 @@ pub(crate) fn format_ufo(
     } else {
         norad_rw_res
     }
+}
+
+fn run_single_quotes_formatter(filepath: &Path) -> Result<()> {
+    io::write_bytes_to_file(filepath, format_single_quotes(&mut io::read_file_to_bytes(filepath)?))
 }
 
 fn format_single_quotes(bytes: &mut Vec<u8>) -> &Vec<u8> {
