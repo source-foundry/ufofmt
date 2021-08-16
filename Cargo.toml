@@ -21,7 +21,6 @@ structopt = "0.3"
 colored = "2.0"
 rayon = "1.5"
 lazy_static = "1.4"
-walkdir = "2.3"
 
 [dev-dependencies]
 fs_extra = "1.2.0"
