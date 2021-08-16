@@ -28,7 +28,7 @@ pub(crate) fn format_ufo(
     }
 
     // norad lib read/write formatting
-    let norad_rw_res = match Font::load(ufopath) {
+    match Font::load(ufopath) {
         Ok(ufo) => {
             let quote_style = {
                 match singlequotes {
@@ -43,9 +43,7 @@ pub(crate) fn format_ufo(
             }
         }
         Err(e) => Err(Error::NoradRead(ufopath.into(), e)),
-    };
-
-    norad_rw_res
+    }
 }
 
 #[cfg(test)]
