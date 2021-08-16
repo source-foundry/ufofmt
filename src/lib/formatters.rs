@@ -1,10 +1,8 @@
 use std::path::{Path, PathBuf};
 
-use norad::Font;
-use rayon::prelude::*;
+use norad::{Font, QuoteChar, WriteOptions};
 
 use crate::lib::errors::{Error, Result};
-use crate::lib::io;
 use crate::lib::utils;
 
 /// Read/write roundtrip through the norad library. Returns Result with successful
@@ -31,52 +29,23 @@ pub(crate) fn format_ufo(
 
     // norad lib read/write formatting
     let norad_rw_res = match Font::load(ufopath) {
-        Ok(ufo) => match ufo.save(&outpath) {
-            Ok(_) => Ok(outpath),
-            Err(e) => Err(Error::NoradWrite(outpath, e)),
-        },
+        Ok(ufo) => {
+            let quote_style = {
+                match singlequotes {
+                    true => QuoteChar::Single,
+                    false => QuoteChar::Double,
+                }
+            };
+            let options = WriteOptions::default().quote_char(quote_style);
+            match ufo.save_with_options(&outpath, &options) {
+                Ok(_) => Ok(outpath),
+                Err(e) => Err(Error::NoradWrite(outpath, e)),
+            }
+        }
         Err(e) => Err(Error::NoradRead(ufopath.into(), e)),
     };
 
-    // single quote formatting
-    if singlequotes {
-        match norad_rw_res {
-            Ok(p) => {
-                let filepaths = io::walk_dir_for_plist_and_glif(&p);
-                let singlequote_res = filepaths
-                    .par_iter()
-                    .map(|filepath| run_single_quotes_formatter(filepath))
-                    .collect::<Vec<Result<()>>>();
-
-                for res in singlequote_res.into_iter() {
-                    match res {
-                        Ok(_) => (),
-                        Err(e) => return Err(e),
-                    }
-                }
-                Ok(p)
-            }
-            Err(e) => Err(e),
-        }
-    } else {
-        norad_rw_res
-    }
-}
-
-fn run_single_quotes_formatter(filepath: &Path) -> Result<()> {
-    io::write_bytes_to_file(filepath, format_single_quotes(&mut io::read_file_to_bytes(filepath)?))
-}
-
-fn format_single_quotes(bytes: &mut Vec<u8>) -> &Vec<u8> {
-    // format the string:
-    // <?xml version="1.0" encoding="UTF-8"?> ...
-    // to:
-    // <?xml version='1.0' encoding='UTF-8'?> ...
-    bytes[14] = 0x0027;
-    bytes[18] = 0x0027;
-    bytes[29] = 0x0027;
-    bytes[35] = 0x0027;
-    bytes
+    norad_rw_res
 }
 
 #[cfg(test)]
