@@ -30,14 +30,14 @@ pub(crate) fn format_ufo(
     // norad lib read/write round trip formatting
     match Font::load(ufopath) {
         Ok(ufo) => {
-            // optional XML declaration quote style
+            // optional XML declaration quote style customization
             let quote_style = {
                 match singlequotes {
                     true => QuoteChar::Single,
                     false => QuoteChar::Double,
                 }
             };
-            // Norad serializztion formatting options
+            // Norad serialization formatting options
             let options = WriteOptions::default().quote_char(quote_style);
             // Execute serialization with options
             match ufo.save_with_options(&outpath, &options) {
