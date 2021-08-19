@@ -156,10 +156,10 @@ mod tests {
         let expected_fontinfo_path = Path::new("testdata/expected/fontinfo.default.plist");
         let expected_fontinfo_string = fs::read_to_string(expected_fontinfo_path).unwrap();
         // glif file
-        let test_glyph_string =
-            fs::read_to_string(&test_ufo_path.join("glyphs").join("A_.glif")).unwrap();
-        let expected_glyph_path = Path::new("testdata/expected/A_.default.glif");
-        let expected_glyph_string = fs::read_to_string(expected_glyph_path).unwrap();
+        // let test_glyph_string =
+        //     fs::read_to_string(&test_ufo_path.join("glyphs").join("A_.glif")).unwrap();
+        // let expected_glyph_path = Path::new("testdata/expected/A_.default.glif");
+        // let expected_glyph_string = fs::read_to_string(expected_glyph_path).unwrap();
         // groups.plist
         let test_groups_string = fs::read_to_string(&test_ufo_path.join("groups.plist")).unwrap();
         let expected_groups_path = Path::new("testdata/expected/groups.default.plist");
