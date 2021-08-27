@@ -56,6 +56,7 @@ mod tests {
     use std::{fs, path::Path};
 
     use fs_extra::dir::{copy, CopyOptions};
+    use pretty_assertions::assert_eq;
     use tempdir;
 
     // ~~~~~~~~~~~~~~~
@@ -140,7 +141,7 @@ mod tests {
 
     // Defaults
     #[test]
-    fn test_format_ufo_default() {
+    fn test_format_default_glif() {
         let tmp_dir = tempdir::TempDir::new("test").unwrap();
         let src_ufo_path = Path::new("testdata/ufo/MutatorSansBoldCondensed.ufo");
         let copy_opt = CopyOptions::new();
@@ -150,57 +151,20 @@ mod tests {
 
         let res_ufo_format = format_ufo(&test_ufo_path, &None, &None, false);
         assert!(res_ufo_format.is_ok());
-        // fontinfo.plist
-        let test_fontinfo_string =
-            fs::read_to_string(&test_ufo_path.join("fontinfo.plist")).unwrap();
-        let expected_fontinfo_path = Path::new("testdata/expected/fontinfo.default.plist");
-        let expected_fontinfo_string = fs::read_to_string(expected_fontinfo_path).unwrap();
+
         // glif file
         let test_glyph_string =
             fs::read_to_string(&test_ufo_path.join("glyphs").join("A_.glif")).unwrap();
-        let expected_glyph_path = Path::new("testdata/expected/A_.default.glif");
+        let expected_glyph_path =
+            Path::new("testdata/expected/MutatorSansBoldCondensed-default.ufo/glyphs/A_.glif");
         let expected_glyph_string = fs::read_to_string(expected_glyph_path).unwrap();
-        // groups.plist
-        let test_groups_string = fs::read_to_string(&test_ufo_path.join("groups.plist")).unwrap();
-        let expected_groups_path = Path::new("testdata/expected/groups.default.plist");
-        let expected_groups_string = fs::read_to_string(expected_groups_path).unwrap();
-        // kerning.plist
-        let test_kerning_string = fs::read_to_string(&test_ufo_path.join("kerning.plist")).unwrap();
-        let expected_kerning_path = Path::new("testdata/expected/kerning.default.plist");
-        let expected_kerning_string = fs::read_to_string(expected_kerning_path).unwrap();
-        // layercontents.plist
-        let test_lc_string =
-            fs::read_to_string(&test_ufo_path.join("layercontents.plist")).unwrap();
-        let expected_lc_path = Path::new("testdata/expected/layercontents.default.plist");
-        let expected_lc_string = fs::read_to_string(expected_lc_path).unwrap();
-        // lib.plist
-        let test_lib_string = fs::read_to_string(&test_ufo_path.join("lib.plist")).unwrap();
-        let expected_lib_path = Path::new("testdata/expected/lib.default.plist");
-        let expected_lib_string = fs::read_to_string(expected_lib_path).unwrap();
-        // metainfo.plist
-        let test_mi_string = fs::read_to_string(&test_ufo_path.join("metainfo.plist")).unwrap();
-        let expected_mi_path = Path::new("testdata/expected/metainfo.default.plist");
-        let expected_mi_string = fs::read_to_string(expected_mi_path).unwrap();
-        // glyphs/contents.plist
-        let test_contents_string =
-            fs::read_to_string(&test_ufo_path.join("glyphs").join("contents.plist")).unwrap();
-        let expected_contents_path = Path::new("testdata/expected/contents.default.plist");
-        let expected_contents_string = fs::read_to_string(expected_contents_path).unwrap();
 
         // observed vs. expected string tests
         assert_eq!(expected_glyph_string, test_glyph_string);
-        assert_eq!(expected_fontinfo_string, test_fontinfo_string);
-        assert_eq!(expected_groups_string, test_groups_string);
-        assert_eq!(expected_kerning_string, test_kerning_string);
-        assert_eq!(expected_lc_string, test_lc_string);
-        assert_eq!(expected_lib_string, test_lib_string);
-        assert_eq!(expected_mi_string, test_mi_string);
-        assert_eq!(expected_contents_string, test_contents_string);
     }
 
-    // XML declaration optional attribute single quote formatting
     #[test]
-    fn test_format_ufo_singlequote() {
+    fn test_format_default_fontinfo_plist() {
         let tmp_dir = tempdir::TempDir::new("test").unwrap();
         let src_ufo_path = Path::new("testdata/ufo/MutatorSansBoldCondensed.ufo");
         let copy_opt = CopyOptions::new();
@@ -208,13 +172,172 @@ mod tests {
         assert!(res_ufo_copy.is_ok());
         let test_ufo_path = tmp_dir.path().join("MutatorSansBoldCondensed.ufo");
 
-        let res_ufo_format = format_ufo(&test_ufo_path, &None, &None, true);
+        let res_ufo_format = format_ufo(&test_ufo_path, &None, &None, false);
         assert!(res_ufo_format.is_ok());
-        let test_glyph = fs::read_to_string(&test_ufo_path.join("glyphs").join("A_.glif")).unwrap();
-        let expected_path = Path::new("testdata/expected/A_.singlequote.glif");
-        let expected_glyph = fs::read_to_string(expected_path).unwrap();
+
+        // fontinfo.plist
+        let test_fontinfo_string =
+            fs::read_to_string(&test_ufo_path.join("fontinfo.plist")).unwrap();
+        let expected_fontinfo_path =
+            Path::new("testdata/expected/MutatorSansBoldCondensed-default.ufo/fontinfo.plist");
+        let expected_fontinfo_string = fs::read_to_string(expected_fontinfo_path).unwrap();
 
         // observed vs. expected string tests
-        assert_eq!(expected_glyph, test_glyph);
+        assert_eq!(expected_fontinfo_string, test_fontinfo_string);
     }
+
+    #[test]
+    fn test_format_default_groups_plist() {
+        let tmp_dir = tempdir::TempDir::new("test").unwrap();
+        let src_ufo_path = Path::new("testdata/ufo/MutatorSansBoldCondensed.ufo");
+        let copy_opt = CopyOptions::new();
+        let res_ufo_copy = copy(&src_ufo_path, &tmp_dir.path(), &copy_opt);
+        assert!(res_ufo_copy.is_ok());
+        let test_ufo_path = tmp_dir.path().join("MutatorSansBoldCondensed.ufo");
+
+        let res_ufo_format = format_ufo(&test_ufo_path, &None, &None, false);
+        assert!(res_ufo_format.is_ok());
+
+        // groups.plist
+        let test_groups_string = fs::read_to_string(&test_ufo_path.join("groups.plist")).unwrap();
+        let expected_groups_path =
+            Path::new("testdata/expected/MutatorSansBoldCondensed-default.ufo/groups.plist");
+        let expected_groups_string = fs::read_to_string(expected_groups_path).unwrap();
+
+        // observed vs. expected string tests
+        assert_eq!(expected_groups_string, test_groups_string);
+    }
+
+    #[test]
+    fn test_format_default_kerning_plist() {
+        let tmp_dir = tempdir::TempDir::new("test").unwrap();
+        let src_ufo_path = Path::new("testdata/ufo/MutatorSansBoldCondensed.ufo");
+        let copy_opt = CopyOptions::new();
+        let res_ufo_copy = copy(&src_ufo_path, &tmp_dir.path(), &copy_opt);
+        assert!(res_ufo_copy.is_ok());
+        let test_ufo_path = tmp_dir.path().join("MutatorSansBoldCondensed.ufo");
+
+        let res_ufo_format = format_ufo(&test_ufo_path, &None, &None, false);
+        assert!(res_ufo_format.is_ok());
+
+        // kerning.plist
+        let test_kerning_string = fs::read_to_string(&test_ufo_path.join("kerning.plist")).unwrap();
+        let expected_kerning_path =
+            Path::new("testdata/expected/MutatorSansBoldCondensed-default.ufo/kerning.plist");
+        let expected_kerning_string = fs::read_to_string(expected_kerning_path).unwrap();
+
+        // observed vs. expected string tests
+        assert_eq!(expected_kerning_string, test_kerning_string);
+    }
+
+    #[test]
+    fn test_format_default_layercontents_plist() {
+        let tmp_dir = tempdir::TempDir::new("test").unwrap();
+        let src_ufo_path = Path::new("testdata/ufo/MutatorSansBoldCondensed.ufo");
+        let copy_opt = CopyOptions::new();
+        let res_ufo_copy = copy(&src_ufo_path, &tmp_dir.path(), &copy_opt);
+        assert!(res_ufo_copy.is_ok());
+        let test_ufo_path = tmp_dir.path().join("MutatorSansBoldCondensed.ufo");
+
+        let res_ufo_format = format_ufo(&test_ufo_path, &None, &None, false);
+        assert!(res_ufo_format.is_ok());
+
+        // layercontents.plist
+        let test_lc_string =
+            fs::read_to_string(&test_ufo_path.join("layercontents.plist")).unwrap();
+        let expected_lc_path =
+            Path::new("testdata/expected/MutatorSansBoldCondensed-default.ufo/layercontents.plist");
+        let expected_lc_string = fs::read_to_string(expected_lc_path).unwrap();
+
+        // observed vs. expected string tests
+        assert_eq!(expected_lc_string, test_lc_string);
+    }
+
+    #[test]
+    fn test_format_default_lib_plist() {
+        let tmp_dir = tempdir::TempDir::new("test").unwrap();
+        let src_ufo_path = Path::new("testdata/ufo/MutatorSansBoldCondensed.ufo");
+        let copy_opt = CopyOptions::new();
+        let res_ufo_copy = copy(&src_ufo_path, &tmp_dir.path(), &copy_opt);
+        assert!(res_ufo_copy.is_ok());
+        let test_ufo_path = tmp_dir.path().join("MutatorSansBoldCondensed.ufo");
+
+        let res_ufo_format = format_ufo(&test_ufo_path, &None, &None, false);
+        assert!(res_ufo_format.is_ok());
+
+        // lib.plist
+        let test_lib_string = fs::read_to_string(&test_ufo_path.join("lib.plist")).unwrap();
+        let expected_lib_path =
+            Path::new("testdata/expected/MutatorSansBoldCondensed-default.ufo/lib.plist");
+        let expected_lib_string = fs::read_to_string(expected_lib_path).unwrap();
+
+        // observed vs. expected string tests
+        assert_eq!(expected_lib_string, test_lib_string);
+    }
+
+    #[test]
+    fn test_format_default_metainfo_plist() {
+        let tmp_dir = tempdir::TempDir::new("test").unwrap();
+        let src_ufo_path = Path::new("testdata/ufo/MutatorSansBoldCondensed.ufo");
+        let copy_opt = CopyOptions::new();
+        let res_ufo_copy = copy(&src_ufo_path, &tmp_dir.path(), &copy_opt);
+        assert!(res_ufo_copy.is_ok());
+        let test_ufo_path = tmp_dir.path().join("MutatorSansBoldCondensed.ufo");
+
+        let res_ufo_format = format_ufo(&test_ufo_path, &None, &None, false);
+        assert!(res_ufo_format.is_ok());
+
+        // metainfo.plist
+        let test_mi_string = fs::read_to_string(&test_ufo_path.join("metainfo.plist")).unwrap();
+        let expected_mi_path =
+            Path::new("testdata/expected/MutatorSansBoldCondensed-default.ufo/metainfo.plist");
+        let expected_mi_string = fs::read_to_string(expected_mi_path).unwrap();
+
+        // observed vs. expected string tests
+        assert_eq!(expected_mi_string, test_mi_string);
+    }
+
+    #[test]
+    fn test_format_default_contents_plist() {
+        let tmp_dir = tempdir::TempDir::new("test").unwrap();
+        let src_ufo_path = Path::new("testdata/ufo/MutatorSansBoldCondensed.ufo");
+        let copy_opt = CopyOptions::new();
+        let res_ufo_copy = copy(&src_ufo_path, &tmp_dir.path(), &copy_opt);
+        assert!(res_ufo_copy.is_ok());
+        let test_ufo_path = tmp_dir.path().join("MutatorSansBoldCondensed.ufo");
+
+        let res_ufo_format = format_ufo(&test_ufo_path, &None, &None, false);
+        assert!(res_ufo_format.is_ok());
+
+        // glyphs/contents.plist
+        let test_contents_string =
+            fs::read_to_string(&test_ufo_path.join("glyphs").join("contents.plist")).unwrap();
+        let expected_contents_path = Path::new(
+            "testdata/expected/MutatorSansBoldCondensed-default.ufo/glyphs/contents.plist",
+        );
+        let expected_contents_string = fs::read_to_string(expected_contents_path).unwrap();
+
+        // observed vs. expected string tests
+        assert_eq!(expected_contents_string, test_contents_string);
+    }
+
+    // XML declaration optional attribute single quote formatting
+    // #[test]
+    // fn test_format_singlequote_glif() {
+    //     let tmp_dir = tempdir::TempDir::new("test").unwrap();
+    //     let src_ufo_path = Path::new("testdata/ufo/MutatorSansBoldCondensed.ufo");
+    //     let copy_opt = CopyOptions::new();
+    //     let res_ufo_copy = copy(&src_ufo_path, &tmp_dir.path(), &copy_opt);
+    //     assert!(res_ufo_copy.is_ok());
+    //     let test_ufo_path = tmp_dir.path().join("MutatorSansBoldCondensed.ufo");
+
+    //     let res_ufo_format = format_ufo(&test_ufo_path, &None, &None, true);
+    //     assert!(res_ufo_format.is_ok());
+    //     let test_glyph = fs::read_to_string(&test_ufo_path.join("glyphs").join("A_.glif")).unwrap();
+    //     let expected_path = Path::new("testdata/expected/A_.singlequote.glif");
+    //     let expected_glyph = fs::read_to_string(expected_path).unwrap();
+
+    //     // observed vs. expected string tests
+    //     assert_eq!(expected_glyph, test_glyph);
+    // }
 }
