@@ -49,6 +49,14 @@ use crate::lib::formatters;
 #[derive(StructOpt, Debug)]
 #[structopt(about = "A fast, flexible UFO source formatter.  Built with Norad.")]
 struct Opt {
+    /// Format XML declaration attributes with single quotes
+    #[structopt(
+        short = "s",
+        long = "singlequotes",
+        help = "Format XML declaration attributes with single quotes"
+    )]
+    singlequotes: bool,
+
     /// Display timing data
     #[structopt(short = "t", long = "time", help = "Display timing data")]
     time: bool,
@@ -84,7 +92,9 @@ fn main() {
     let results: Vec<errors::Result<PathBuf>> = argv
         .ufopaths
         .par_iter()
-        .map(|ufopath| formatters::format_ufo(ufopath, &argv.uniquename, &argv.uniqueext))
+        .map(|ufopath| {
+            formatters::format_ufo(ufopath, &argv.uniquename, &argv.uniqueext, argv.singlequotes)
+        })
         .collect();
     let duration = now.elapsed().as_millis();
 
