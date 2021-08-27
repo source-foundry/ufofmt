@@ -1,5 +1,15 @@
 # Changelog
 
+## v0.4.0
+
+- add parallel glif serialization support
+- add custom outpath file extensions with `--out-ext` option
+- add custom outpath appended file name strings with `--out-name` option
+- add optional XML declaration single quote formatting with `--singlequote` option
+- add lazy_static dependency
+- bump norad dependency to v0.5.0 (from v0.4.0)
+- add pretty_assertions developer dependency
+
 ## v0.3.0
 
 - activate rayon feature in norad library dependency
