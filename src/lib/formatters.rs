@@ -1055,53 +1055,40 @@ mod tests {
         assert!(res_ufo_format.is_ok());
         let test_glyph_string =
             fs::read_to_string(&test_ufo_path.join("glyphs").join("A_.glif")).unwrap();
+        // should use single quotes
+        assert!(test_glyph_string.starts_with("<?xml version='1.0' encoding='UTF-8'?>"));
+    }
 
-        let expected_glyph_string = "<?xml version='1.0' encoding='UTF-8'?>
-<glyph name=\"A\" format=\"2\">
-\t<unicode hex=\"0041\"/>
-\t<advance width=\"740\"/>
-\t<outline>
-\t\t<contour>
-\t\t\t<point x=\"-10\" y=\"0\" type=\"line\"/>
-\t\t\t<point x=\"250\" y=\"0\" type=\"line\"/>
-\t\t\t<point x=\"334\" y=\"800\" type=\"line\"/>
-\t\t\t<point x=\"104\" y=\"800\" type=\"line\"/>
-\t\t</contour>
-\t\t<contour>
-\t\t\t<point x=\"110\" y=\"120\" type=\"line\"/>
-\t\t\t<point x=\"580\" y=\"120\" type=\"line\"/>
-\t\t\t<point x=\"580\" y=\"330\" type=\"line\"/>
-\t\t\t<point x=\"110\" y=\"330\" type=\"line\"/>
-\t\t</contour>
-\t\t<contour>
-\t\t\t<point x=\"390\" y=\"0\" type=\"line\"/>
-\t\t\t<point x=\"730\" y=\"0\" type=\"line\"/>
-\t\t\t<point x=\"614\" y=\"800\" type=\"line\"/>
-\t\t\t<point x=\"294\" y=\"800\" type=\"line\"/>
-\t\t</contour>
-\t\t<contour>
-\t\t\t<point x=\"204\" y=\"540\" type=\"line\"/>
-\t\t\t<point x=\"474\" y=\"540\" type=\"line\"/>
-\t\t\t<point x=\"474\" y=\"800\" type=\"line\"/>
-\t\t\t<point x=\"204\" y=\"800\" type=\"line\"/>
-\t\t</contour>
-\t</outline>
-\t<lib>
-\t\t<dict>
-\t\t\t<key>com.typemytype.robofont.Image.Brightness</key>
-\t\t\t<integer>0</integer>
-\t\t\t<key>com.typemytype.robofont.Image.Contrast</key>
-\t\t\t<integer>1</integer>
-\t\t\t<key>com.typemytype.robofont.Image.Saturation</key>
-\t\t\t<integer>1</integer>
-\t\t\t<key>com.typemytype.robofont.Image.Sharpness</key>
-\t\t\t<real>0.4</real>
-\t\t</dict>
-\t</lib>
-</glyph>
-";
+    #[test]
+    fn test_format_singlequote_fontinfo_plist() {
+        let tmp_dir = tempdir::TempDir::new("test").unwrap();
+        let src_ufo_path = Path::new("testdata/ufo/MutatorSansBoldCondensed.ufo");
+        let copy_opt = CopyOptions::new();
+        let res_ufo_copy = copy(&src_ufo_path, &tmp_dir.path(), &copy_opt);
+        assert!(res_ufo_copy.is_ok());
+        let test_ufo_path = tmp_dir.path().join("MutatorSansBoldCondensed.ufo");
 
-        // observed vs. expected string tests
-        assert_eq!(expected_glyph_string, test_glyph_string);
+        let res_ufo_format = format_ufo(&test_ufo_path, &None, &None, true);
+        assert!(res_ufo_format.is_ok());
+        let test_fontinfo_string =
+            fs::read_to_string(&test_ufo_path.join("fontinfo.plist")).unwrap();
+        // should use single quotes
+        assert!(test_fontinfo_string.starts_with("<?xml version='1.0' encoding='UTF-8'?>"));
+    }
+
+    #[test]
+    fn test_format_singlequote_lib_plist() {
+        let tmp_dir = tempdir::TempDir::new("test").unwrap();
+        let src_ufo_path = Path::new("testdata/ufo/MutatorSansBoldCondensed.ufo");
+        let copy_opt = CopyOptions::new();
+        let res_ufo_copy = copy(&src_ufo_path, &tmp_dir.path(), &copy_opt);
+        assert!(res_ufo_copy.is_ok());
+        let test_ufo_path = tmp_dir.path().join("MutatorSansBoldCondensed.ufo");
+
+        let res_ufo_format = format_ufo(&test_ufo_path, &None, &None, true);
+        assert!(res_ufo_format.is_ok());
+        let test_fontinfo_string = fs::read_to_string(&test_ufo_path.join("lib.plist")).unwrap();
+        // should use single quotes
+        assert!(test_fontinfo_string.starts_with("<?xml version='1.0' encoding='UTF-8'?>"));
     }
 }
