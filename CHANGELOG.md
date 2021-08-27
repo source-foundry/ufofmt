@@ -1,5 +1,18 @@
 # Changelog
 
+## v0.4.1
+
+- Cargo.lock dependency updates (includes bump beyond yanked version of crossbeam-deque):
+  - bump bitflags v1.2.1 -> v1.3.2
+  - bump crossbeam-deque v0.8.0 -> v0.8.1
+  - bump libc v0.2.98 -> v0.2.101
+  - bump memchr v2.4.0 -> v2.4.1
+  - bump proc-macro2 v1.0.27 -> v1.0.28
+  - bump serde v1.0.126 -> v1.0.129
+  - bump serde_derive v1.0.126 -> v1.0.129
+  - bump syn v1.0.74 -> v1.0.75
+  - bump xml-rs v0.8.3 -> v0.8.4
+
 ## v0.4.0
 
 - add parallel glif serialization support
