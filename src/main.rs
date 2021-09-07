@@ -57,6 +57,16 @@ struct Opt {
     )]
     singlequotes: bool,
 
+    #[structopt(long = "indent-space", help = "Use space char for indentation [default: tab]")]
+    indent_with_space: bool,
+
+    #[structopt(
+        long = "indent-number",
+        help = "Number of indentation char per indent level (valid range = 1 - 4)",
+        default_value = "2"
+    )]
+    indent_number: u8,
+
     /// Display timing data
     #[structopt(short = "t", long = "time", help = "Display timing data")]
     time: bool,
@@ -84,6 +94,18 @@ struct Opt {
 
 fn main() {
     let argv = Opt::from_args();
+
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // CL arg validation checks
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    if argv.indent_number > 4 || argv.indent_number < 1 {
+        eprintln!(
+            "{} {}",
+            *errors::ERROR_INDICATOR,
+            "indentation char number must have a value between 1 - 4"
+        );
+        std::process::exit(1);
+    }
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // Source formatting execution
