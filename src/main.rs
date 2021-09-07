@@ -100,9 +100,8 @@ fn main() {
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~
     if argv.indent_number > 4 || argv.indent_number < 1 {
         eprintln!(
-            "{} {}",
+            "{} indentation char number must have a value between 1 - 4",
             *errors::ERROR_INDICATOR,
-            "indentation char number must have a value between 1 - 4"
         );
         std::process::exit(1);
     }
