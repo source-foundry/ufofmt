@@ -2765,4 +2765,250 @@ mod tests {
         // observed vs. expected string tests
         assert_eq!(expected_mi_string, test_mi_string);
     }
+
+    #[test]
+    fn test_format_indent_twotabs_contents_plist() {
+        let tmp_dir = tempdir::TempDir::new("test").unwrap();
+        let src_ufo_path = Path::new("testdata/ufo/MutatorSansBoldCondensed.ufo");
+        let copy_opt = CopyOptions::new();
+        let res_ufo_copy = copy(&src_ufo_path, &tmp_dir.path(), &copy_opt);
+        assert!(res_ufo_copy.is_ok());
+        let test_ufo_path = tmp_dir.path().join("MutatorSansBoldCondensed.ufo");
+
+        let res_ufo_format = format_ufo(&test_ufo_path, &None, &None, false, false, 2);
+        assert!(res_ufo_format.is_ok());
+
+        // glyphs/contents.plist
+        let test_contents_string =
+            fs::read_to_string(&test_ufo_path.join("glyphs").join("contents.plist")).unwrap();
+
+        let expected_contents_string = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">
+<plist version=\"1.0\">
+<dict>
+\t\t<key>A</key>
+\t\t<string>A_.glif</string>
+\t\t<key>Aacute</key>
+\t\t<string>A_acute.glif</string>
+\t\t<key>Adieresis</key>
+\t\t<string>A_dieresis.glif</string>
+\t\t<key>B</key>
+\t\t<string>B_.glif</string>
+\t\t<key>C</key>
+\t\t<string>C_.glif</string>
+\t\t<key>D</key>
+\t\t<string>D_.glif</string>
+\t\t<key>E</key>
+\t\t<string>E_.glif</string>
+\t\t<key>F</key>
+\t\t<string>F_.glif</string>
+\t\t<key>G</key>
+\t\t<string>G_.glif</string>
+\t\t<key>H</key>
+\t\t<string>H_.glif</string>
+\t\t<key>I</key>
+\t\t<string>I_.glif</string>
+\t\t<key>I.narrow</key>
+\t\t<string>I_.narrow.glif</string>
+\t\t<key>IJ</key>
+\t\t<string>I_J_.glif</string>
+\t\t<key>J</key>
+\t\t<string>J_.glif</string>
+\t\t<key>J.narrow</key>
+\t\t<string>J_.narrow.glif</string>
+\t\t<key>K</key>
+\t\t<string>K_.glif</string>
+\t\t<key>L</key>
+\t\t<string>L_.glif</string>
+\t\t<key>M</key>
+\t\t<string>M_.glif</string>
+\t\t<key>N</key>
+\t\t<string>N_.glif</string>
+\t\t<key>O</key>
+\t\t<string>O_.glif</string>
+\t\t<key>P</key>
+\t\t<string>P_.glif</string>
+\t\t<key>Q</key>
+\t\t<string>Q_.glif</string>
+\t\t<key>R</key>
+\t\t<string>R_.glif</string>
+\t\t<key>S</key>
+\t\t<string>S_.glif</string>
+\t\t<key>S.closed</key>
+\t\t<string>S_.closed.glif</string>
+\t\t<key>T</key>
+\t\t<string>T_.glif</string>
+\t\t<key>U</key>
+\t\t<string>U_.glif</string>
+\t\t<key>V</key>
+\t\t<string>V_.glif</string>
+\t\t<key>W</key>
+\t\t<string>W_.glif</string>
+\t\t<key>X</key>
+\t\t<string>X_.glif</string>
+\t\t<key>Y</key>
+\t\t<string>Y_.glif</string>
+\t\t<key>Z</key>
+\t\t<string>Z_.glif</string>
+\t\t<key>acute</key>
+\t\t<string>acute.glif</string>
+\t\t<key>arrowdown</key>
+\t\t<string>arrowdown.glif</string>
+\t\t<key>arrowleft</key>
+\t\t<string>arrowleft.glif</string>
+\t\t<key>arrowright</key>
+\t\t<string>arrowright.glif</string>
+\t\t<key>arrowup</key>
+\t\t<string>arrowup.glif</string>
+\t\t<key>colon</key>
+\t\t<string>colon.glif</string>
+\t\t<key>comma</key>
+\t\t<string>comma.glif</string>
+\t\t<key>dieresis</key>
+\t\t<string>dieresis.glif</string>
+\t\t<key>dot</key>
+\t\t<string>dot.glif</string>
+\t\t<key>period</key>
+\t\t<string>period.glif</string>
+\t\t<key>quotedblbase</key>
+\t\t<string>quotedblbase.glif</string>
+\t\t<key>quotedblleft</key>
+\t\t<string>quotedblleft.glif</string>
+\t\t<key>quotedblright</key>
+\t\t<string>quotedblright.glif</string>
+\t\t<key>quotesinglbase</key>
+\t\t<string>quotesinglbase.glif</string>
+\t\t<key>semicolon</key>
+\t\t<string>semicolon.glif</string>
+\t\t<key>space</key>
+\t\t<string>space.glif</string>
+</dict>
+</plist>";
+
+        // observed vs. expected string tests
+        assert_eq!(expected_contents_string, test_contents_string);
+    }
+
+    #[test]
+    fn test_format_indent_fourspaces_contents_plist() {
+        let tmp_dir = tempdir::TempDir::new("test").unwrap();
+        let src_ufo_path = Path::new("testdata/ufo/MutatorSansBoldCondensed.ufo");
+        let copy_opt = CopyOptions::new();
+        let res_ufo_copy = copy(&src_ufo_path, &tmp_dir.path(), &copy_opt);
+        assert!(res_ufo_copy.is_ok());
+        let test_ufo_path = tmp_dir.path().join("MutatorSansBoldCondensed.ufo");
+
+        let res_ufo_format = format_ufo(&test_ufo_path, &None, &None, false, true, 4);
+        assert!(res_ufo_format.is_ok());
+
+        // glyphs/contents.plist
+        let test_contents_string =
+            fs::read_to_string(&test_ufo_path.join("glyphs").join("contents.plist")).unwrap();
+
+        let expected_contents_string = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">
+<plist version=\"1.0\">
+<dict>
+    <key>A</key>
+    <string>A_.glif</string>
+    <key>Aacute</key>
+    <string>A_acute.glif</string>
+    <key>Adieresis</key>
+    <string>A_dieresis.glif</string>
+    <key>B</key>
+    <string>B_.glif</string>
+    <key>C</key>
+    <string>C_.glif</string>
+    <key>D</key>
+    <string>D_.glif</string>
+    <key>E</key>
+    <string>E_.glif</string>
+    <key>F</key>
+    <string>F_.glif</string>
+    <key>G</key>
+    <string>G_.glif</string>
+    <key>H</key>
+    <string>H_.glif</string>
+    <key>I</key>
+    <string>I_.glif</string>
+    <key>I.narrow</key>
+    <string>I_.narrow.glif</string>
+    <key>IJ</key>
+    <string>I_J_.glif</string>
+    <key>J</key>
+    <string>J_.glif</string>
+    <key>J.narrow</key>
+    <string>J_.narrow.glif</string>
+    <key>K</key>
+    <string>K_.glif</string>
+    <key>L</key>
+    <string>L_.glif</string>
+    <key>M</key>
+    <string>M_.glif</string>
+    <key>N</key>
+    <string>N_.glif</string>
+    <key>O</key>
+    <string>O_.glif</string>
+    <key>P</key>
+    <string>P_.glif</string>
+    <key>Q</key>
+    <string>Q_.glif</string>
+    <key>R</key>
+    <string>R_.glif</string>
+    <key>S</key>
+    <string>S_.glif</string>
+    <key>S.closed</key>
+    <string>S_.closed.glif</string>
+    <key>T</key>
+    <string>T_.glif</string>
+    <key>U</key>
+    <string>U_.glif</string>
+    <key>V</key>
+    <string>V_.glif</string>
+    <key>W</key>
+    <string>W_.glif</string>
+    <key>X</key>
+    <string>X_.glif</string>
+    <key>Y</key>
+    <string>Y_.glif</string>
+    <key>Z</key>
+    <string>Z_.glif</string>
+    <key>acute</key>
+    <string>acute.glif</string>
+    <key>arrowdown</key>
+    <string>arrowdown.glif</string>
+    <key>arrowleft</key>
+    <string>arrowleft.glif</string>
+    <key>arrowright</key>
+    <string>arrowright.glif</string>
+    <key>arrowup</key>
+    <string>arrowup.glif</string>
+    <key>colon</key>
+    <string>colon.glif</string>
+    <key>comma</key>
+    <string>comma.glif</string>
+    <key>dieresis</key>
+    <string>dieresis.glif</string>
+    <key>dot</key>
+    <string>dot.glif</string>
+    <key>period</key>
+    <string>period.glif</string>
+    <key>quotedblbase</key>
+    <string>quotedblbase.glif</string>
+    <key>quotedblleft</key>
+    <string>quotedblleft.glif</string>
+    <key>quotedblright</key>
+    <string>quotedblright.glif</string>
+    <key>quotesinglbase</key>
+    <string>quotesinglbase.glif</string>
+    <key>semicolon</key>
+    <string>semicolon.glif</string>
+    <key>space</key>
+    <string>space.glif</string>
+</dict>
+</plist>";
+
+        // observed vs. expected string tests
+        assert_eq!(expected_contents_string, test_contents_string);
+    }
 }
