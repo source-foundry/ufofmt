@@ -1519,4 +1519,82 @@ mod tests {
         // observed vs. expected string tests
         assert_eq!(expected_fontinfo_string, test_fontinfo_string);
     }
+
+    #[test]
+    fn test_format_indent_twotabs_groups_plist() {
+        let tmp_dir = tempdir::TempDir::new("test").unwrap();
+        let src_ufo_path = Path::new("testdata/ufo/MutatorSansBoldCondensed.ufo");
+        let copy_opt = CopyOptions::new();
+        let res_ufo_copy = copy(&src_ufo_path, &tmp_dir.path(), &copy_opt);
+        assert!(res_ufo_copy.is_ok());
+        let test_ufo_path = tmp_dir.path().join("MutatorSansBoldCondensed.ufo");
+
+        let res_ufo_format = format_ufo(&test_ufo_path, &None, &None, false, false, 2);
+        assert!(res_ufo_format.is_ok());
+
+        // groups.plist
+        let test_groups_string = fs::read_to_string(&test_ufo_path.join("groups.plist")).unwrap();
+        let expected_groups_string = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">
+<plist version=\"1.0\">
+<dict>
+\t\t<key>public.kern1.@MMK_L_A</key>
+\t\t<array>
+\t\t\t\t<string>A</string>
+\t\t</array>
+\t\t<key>public.kern2.@MMK_R_A</key>
+\t\t<array>
+\t\t\t\t<string>A</string>
+\t\t</array>
+\t\t<key>testGroup</key>
+\t\t<array>
+\t\t\t\t<string>E</string>
+\t\t\t\t<string>F</string>
+\t\t\t\t<string>H</string>
+\t\t</array>
+</dict>
+</plist>";
+
+        // observed vs. expected string tests
+        assert_eq!(expected_groups_string, test_groups_string);
+    }
+
+    #[test]
+    fn test_format_indent_fourspace_groups_plist() {
+        let tmp_dir = tempdir::TempDir::new("test").unwrap();
+        let src_ufo_path = Path::new("testdata/ufo/MutatorSansBoldCondensed.ufo");
+        let copy_opt = CopyOptions::new();
+        let res_ufo_copy = copy(&src_ufo_path, &tmp_dir.path(), &copy_opt);
+        assert!(res_ufo_copy.is_ok());
+        let test_ufo_path = tmp_dir.path().join("MutatorSansBoldCondensed.ufo");
+
+        let res_ufo_format = format_ufo(&test_ufo_path, &None, &None, false, true, 4);
+        assert!(res_ufo_format.is_ok());
+
+        // groups.plist
+        let test_groups_string = fs::read_to_string(&test_ufo_path.join("groups.plist")).unwrap();
+        let expected_groups_string = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">
+<plist version=\"1.0\">
+<dict>
+    <key>public.kern1.@MMK_L_A</key>
+    <array>
+        <string>A</string>
+    </array>
+    <key>public.kern2.@MMK_R_A</key>
+    <array>
+        <string>A</string>
+    </array>
+    <key>testGroup</key>
+    <array>
+        <string>E</string>
+        <string>F</string>
+        <string>H</string>
+    </array>
+</dict>
+</plist>";
+
+        // observed vs. expected string tests
+        assert_eq!(expected_groups_string, test_groups_string);
+    }
 }
