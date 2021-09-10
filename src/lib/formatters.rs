@@ -12,6 +12,8 @@ pub(crate) fn format_ufo(
     unique_filename: &Option<String>,
     unique_extension: &Option<String>,
     singlequotes: bool,
+    indent_with_space: bool,
+    indent_number: u8,
 ) -> Result<PathBuf> {
     // validate UFO directory path request
     if !ufopath.exists() {
@@ -27,6 +29,9 @@ pub(crate) fn format_ufo(
         outpath = ufopath.to_path_buf();
     }
 
+    // define the indentation spacing format based on user CL options
+    let indentation_space = get_indent_str(indent_with_space, indent_number);
+
     // norad lib read/write round trip formatting
     match Font::load(ufopath) {
         Ok(ufo) => {
@@ -38,7 +43,9 @@ pub(crate) fn format_ufo(
                 }
             };
             // Norad serialization formatting options
-            let options = WriteOptions::default().quote_char(quote_style);
+
+            let options =
+                WriteOptions::default().whitespace(indentation_space).quote_char(quote_style);
             // Execute serialization with options
             match ufo.save_with_options(&outpath, &options) {
                 Ok(_) => Ok(outpath),
@@ -46,6 +53,20 @@ pub(crate) fn format_ufo(
             }
         }
         Err(e) => Err(Error::NoradRead(ufopath.into(), e)),
+    }
+}
+
+fn get_indent_str(indent_with_space: bool, indent_number: u8) -> &'static str {
+    match (indent_with_space, indent_number) {
+        (false, 1) => "\t",
+        (false, 2) => "\t\t",
+        (false, 3) => "\t\t\t",
+        (false, 4) => "\t\t\t\t",
+        (true, 1) => " ",
+        (true, 2) => "  ",
+        (true, 3) => "   ",
+        (true, 4) => "    ",
+        (_, _) => panic!("unsupported indentation definition"),
     }
 }
 
@@ -66,7 +87,7 @@ mod tests {
     #[test]
     fn test_format_ufo_invalid_dir_path_default() {
         let invalid_path = Path::new("totally/bogus/path/test.ufo");
-        let res = format_ufo(invalid_path, &None, &None, false);
+        let res = format_ufo(invalid_path, &None, &None, false, false, 1);
         match res {
             Ok(x) => panic!("failed with unexpected test result: {:?}", x),
             Err(err) => {
@@ -83,8 +104,14 @@ mod tests {
     #[test]
     fn test_format_ufo_invalid_dir_path_with_custom_names() {
         let invalid_path = Path::new("totally/bogus/path/test.ufo");
-        let res =
-            format_ufo(invalid_path, &Some("_new".to_string()), &Some(".test".to_string()), false);
+        let res = format_ufo(
+            invalid_path,
+            &Some("_new".to_string()),
+            &Some(".test".to_string()),
+            false,
+            false,
+            1,
+        );
         match res {
             Ok(x) => panic!("failed with unexpected test result: {:?}", x),
             Err(err) => {
@@ -108,7 +135,7 @@ mod tests {
         let test_ufo_path = tmp_dir.path().join("MutatorSansBoldCondensed.ufo");
 
         // test run of formatter across valid UFO sources
-        let res_ufo_format = format_ufo(&test_ufo_path, &None, &None, false);
+        let res_ufo_format = format_ufo(&test_ufo_path, &None, &None, false, false, 1);
         assert!(res_ufo_format.is_ok());
         assert_eq!(format!("{:?}", res_ufo_format.unwrap()), format!("{:?}", &test_ufo_path));
         assert!(&test_ufo_path.exists());
@@ -127,8 +154,14 @@ mod tests {
         let test_ufo_path = tmp_dir.path().join("MutatorSansBoldCondensed.ufo");
 
         // test run of formatter across valid UFO sources
-        let res_ufo_format =
-            format_ufo(&test_ufo_path, &Some("_new".to_string()), &Some("test".to_string()), false);
+        let res_ufo_format = format_ufo(
+            &test_ufo_path,
+            &Some("_new".to_string()),
+            &Some("test".to_string()),
+            false,
+            false,
+            1,
+        );
         assert!(res_ufo_format.is_ok());
         let expected_path = tmp_dir.path().join("MutatorSansBoldCondensed_new.test");
         assert_eq!(format!("{:?}", res_ufo_format.unwrap()), format!("{:?}", expected_path));
@@ -149,7 +182,7 @@ mod tests {
         assert!(res_ufo_copy.is_ok());
         let test_ufo_path = tmp_dir.path().join("MutatorSansBoldCondensed.ufo");
 
-        let res_ufo_format = format_ufo(&test_ufo_path, &None, &None, false);
+        let res_ufo_format = format_ufo(&test_ufo_path, &None, &None, false, false, 1);
         assert!(res_ufo_format.is_ok());
 
         // glif file
@@ -213,7 +246,7 @@ mod tests {
         assert!(res_ufo_copy.is_ok());
         let test_ufo_path = tmp_dir.path().join("MutatorSansBoldCondensed.ufo");
 
-        let res_ufo_format = format_ufo(&test_ufo_path, &None, &None, false);
+        let res_ufo_format = format_ufo(&test_ufo_path, &None, &None, false, false, 1);
         assert!(res_ufo_format.is_ok());
 
         // fontinfo.plist
@@ -304,7 +337,7 @@ mod tests {
         assert!(res_ufo_copy.is_ok());
         let test_ufo_path = tmp_dir.path().join("MutatorSansBoldCondensed.ufo");
 
-        let res_ufo_format = format_ufo(&test_ufo_path, &None, &None, false);
+        let res_ufo_format = format_ufo(&test_ufo_path, &None, &None, false, false, 1);
         assert!(res_ufo_format.is_ok());
 
         // groups.plist
@@ -343,7 +376,7 @@ mod tests {
         assert!(res_ufo_copy.is_ok());
         let test_ufo_path = tmp_dir.path().join("MutatorSansBoldCondensed.ufo");
 
-        let res_ufo_format = format_ufo(&test_ufo_path, &None, &None, false);
+        let res_ufo_format = format_ufo(&test_ufo_path, &None, &None, false, false, 1);
         assert!(res_ufo_format.is_ok());
 
         // kerning.plist
@@ -573,7 +606,7 @@ mod tests {
         assert!(res_ufo_copy.is_ok());
         let test_ufo_path = tmp_dir.path().join("MutatorSansBoldCondensed.ufo");
 
-        let res_ufo_format = format_ufo(&test_ufo_path, &None, &None, false);
+        let res_ufo_format = format_ufo(&test_ufo_path, &None, &None, false, false, 1);
         assert!(res_ufo_format.is_ok());
 
         // layercontents.plist
@@ -607,7 +640,7 @@ mod tests {
         assert!(res_ufo_copy.is_ok());
         let test_ufo_path = tmp_dir.path().join("MutatorSansBoldCondensed.ufo");
 
-        let res_ufo_format = format_ufo(&test_ufo_path, &None, &None, false);
+        let res_ufo_format = format_ufo(&test_ufo_path, &None, &None, false, false, 1);
         assert!(res_ufo_format.is_ok());
 
         // lib.plist
@@ -897,7 +930,7 @@ mod tests {
         assert!(res_ufo_copy.is_ok());
         let test_ufo_path = tmp_dir.path().join("MutatorSansBoldCondensed.ufo");
 
-        let res_ufo_format = format_ufo(&test_ufo_path, &None, &None, false);
+        let res_ufo_format = format_ufo(&test_ufo_path, &None, &None, false, false, 1);
         assert!(res_ufo_format.is_ok());
 
         // metainfo.plist
@@ -927,7 +960,7 @@ mod tests {
         assert!(res_ufo_copy.is_ok());
         let test_ufo_path = tmp_dir.path().join("MutatorSansBoldCondensed.ufo");
 
-        let res_ufo_format = format_ufo(&test_ufo_path, &None, &None, false);
+        let res_ufo_format = format_ufo(&test_ufo_path, &None, &None, false, false, 1);
         assert!(res_ufo_format.is_ok());
 
         // glyphs/contents.plist
@@ -1051,7 +1084,7 @@ mod tests {
         assert!(res_ufo_copy.is_ok());
         let test_ufo_path = tmp_dir.path().join("MutatorSansBoldCondensed.ufo");
 
-        let res_ufo_format = format_ufo(&test_ufo_path, &None, &None, true);
+        let res_ufo_format = format_ufo(&test_ufo_path, &None, &None, true, false, 1);
         assert!(res_ufo_format.is_ok());
         let test_glyph_string =
             fs::read_to_string(&test_ufo_path.join("glyphs").join("A_.glif")).unwrap();
@@ -1068,7 +1101,7 @@ mod tests {
         assert!(res_ufo_copy.is_ok());
         let test_ufo_path = tmp_dir.path().join("MutatorSansBoldCondensed.ufo");
 
-        let res_ufo_format = format_ufo(&test_ufo_path, &None, &None, true);
+        let res_ufo_format = format_ufo(&test_ufo_path, &None, &None, true, false, 1);
         assert!(res_ufo_format.is_ok());
         let test_fontinfo_string =
             fs::read_to_string(&test_ufo_path.join("fontinfo.plist")).unwrap();
@@ -1085,10 +1118,223 @@ mod tests {
         assert!(res_ufo_copy.is_ok());
         let test_ufo_path = tmp_dir.path().join("MutatorSansBoldCondensed.ufo");
 
-        let res_ufo_format = format_ufo(&test_ufo_path, &None, &None, true);
+        let res_ufo_format = format_ufo(&test_ufo_path, &None, &None, true, false, 1);
         assert!(res_ufo_format.is_ok());
         let test_fontinfo_string = fs::read_to_string(&test_ufo_path.join("lib.plist")).unwrap();
         // should use single quotes
         assert!(test_fontinfo_string.starts_with("<?xml version='1.0' encoding='UTF-8'?>"));
+    }
+
+    // Indentation spacing format tests
+    #[test]
+    fn test_get_indent_str() {
+        let onetab = get_indent_str(false, 1);
+        let twotabs = get_indent_str(false, 2);
+        let threetabs = get_indent_str(false, 3);
+        let fourtabs = get_indent_str(false, 4);
+        let onespace = get_indent_str(true, 1);
+        let twospaces = get_indent_str(true, 2);
+        let threespaces = get_indent_str(true, 3);
+        let fourspaces = get_indent_str(true, 4);
+
+        assert_eq!(onetab, "\t");
+        assert_eq!(twotabs, "\t\t");
+        assert_eq!(threetabs, "\t\t\t");
+        assert_eq!(fourtabs, "\t\t\t\t");
+        assert_eq!(onespace, " ");
+        assert_eq!(twospaces, "  ");
+        assert_eq!(threespaces, "   ");
+        assert_eq!(fourspaces, "    ");
+    }
+
+    #[test]
+    fn test_format_indent_twotab_glif() {
+        let tmp_dir = tempdir::TempDir::new("test").unwrap();
+        let src_ufo_path = Path::new("testdata/ufo/MutatorSansBoldCondensed.ufo");
+        let copy_opt = CopyOptions::new();
+        let res_ufo_copy = copy(&src_ufo_path, &tmp_dir.path(), &copy_opt);
+        assert!(res_ufo_copy.is_ok());
+        let test_ufo_path = tmp_dir.path().join("MutatorSansBoldCondensed.ufo");
+
+        let res_ufo_format = format_ufo(&test_ufo_path, &None, &None, false, false, 2);
+        assert!(res_ufo_format.is_ok());
+
+        // glif file
+        let test_glyph_string =
+            fs::read_to_string(&test_ufo_path.join("glyphs").join("A_.glif")).unwrap();
+        let expected_glyph_string = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<glyph name=\"A\" format=\"2\">
+\t\t<unicode hex=\"0041\"/>
+\t\t<advance width=\"740\"/>
+\t\t<outline>
+\t\t\t\t<contour>
+\t\t\t\t\t\t<point x=\"-10\" y=\"0\" type=\"line\"/>
+\t\t\t\t\t\t<point x=\"250\" y=\"0\" type=\"line\"/>
+\t\t\t\t\t\t<point x=\"334\" y=\"800\" type=\"line\"/>
+\t\t\t\t\t\t<point x=\"104\" y=\"800\" type=\"line\"/>
+\t\t\t\t</contour>
+\t\t\t\t<contour>
+\t\t\t\t\t\t<point x=\"110\" y=\"120\" type=\"line\"/>
+\t\t\t\t\t\t<point x=\"580\" y=\"120\" type=\"line\"/>
+\t\t\t\t\t\t<point x=\"580\" y=\"330\" type=\"line\"/>
+\t\t\t\t\t\t<point x=\"110\" y=\"330\" type=\"line\"/>
+\t\t\t\t</contour>
+\t\t\t\t<contour>
+\t\t\t\t\t\t<point x=\"390\" y=\"0\" type=\"line\"/>
+\t\t\t\t\t\t<point x=\"730\" y=\"0\" type=\"line\"/>
+\t\t\t\t\t\t<point x=\"614\" y=\"800\" type=\"line\"/>
+\t\t\t\t\t\t<point x=\"294\" y=\"800\" type=\"line\"/>
+\t\t\t\t</contour>
+\t\t\t\t<contour>
+\t\t\t\t\t\t<point x=\"204\" y=\"540\" type=\"line\"/>
+\t\t\t\t\t\t<point x=\"474\" y=\"540\" type=\"line\"/>
+\t\t\t\t\t\t<point x=\"474\" y=\"800\" type=\"line\"/>
+\t\t\t\t\t\t<point x=\"204\" y=\"800\" type=\"line\"/>
+\t\t\t\t</contour>
+\t\t</outline>
+\t\t<lib>
+\t\t\t\t<dict>
+\t\t\t\t\t\t<key>com.typemytype.robofont.Image.Brightness</key>
+\t\t\t\t\t\t<integer>0</integer>
+\t\t\t\t\t\t<key>com.typemytype.robofont.Image.Contrast</key>
+\t\t\t\t\t\t<integer>1</integer>
+\t\t\t\t\t\t<key>com.typemytype.robofont.Image.Saturation</key>
+\t\t\t\t\t\t<integer>1</integer>
+\t\t\t\t\t\t<key>com.typemytype.robofont.Image.Sharpness</key>
+\t\t\t\t\t\t<real>0.4</real>
+\t\t\t\t</dict>
+\t\t</lib>
+</glyph>
+";
+
+        assert_eq!(expected_glyph_string, test_glyph_string);
+    }
+
+    #[test]
+    fn test_format_indent_singlespace_glif() {
+        let tmp_dir = tempdir::TempDir::new("test").unwrap();
+        let src_ufo_path = Path::new("testdata/ufo/MutatorSansBoldCondensed.ufo");
+        let copy_opt = CopyOptions::new();
+        let res_ufo_copy = copy(&src_ufo_path, &tmp_dir.path(), &copy_opt);
+        assert!(res_ufo_copy.is_ok());
+        let test_ufo_path = tmp_dir.path().join("MutatorSansBoldCondensed.ufo");
+
+        let res_ufo_format = format_ufo(&test_ufo_path, &None, &None, false, true, 1);
+        assert!(res_ufo_format.is_ok());
+
+        // glif file
+        let test_glyph_string =
+            fs::read_to_string(&test_ufo_path.join("glyphs").join("A_.glif")).unwrap();
+        let expected_glyph_string = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<glyph name=\"A\" format=\"2\">
+ <unicode hex=\"0041\"/>
+ <advance width=\"740\"/>
+ <outline>
+  <contour>
+   <point x=\"-10\" y=\"0\" type=\"line\"/>
+   <point x=\"250\" y=\"0\" type=\"line\"/>
+   <point x=\"334\" y=\"800\" type=\"line\"/>
+   <point x=\"104\" y=\"800\" type=\"line\"/>
+  </contour>
+  <contour>
+   <point x=\"110\" y=\"120\" type=\"line\"/>
+   <point x=\"580\" y=\"120\" type=\"line\"/>
+   <point x=\"580\" y=\"330\" type=\"line\"/>
+   <point x=\"110\" y=\"330\" type=\"line\"/>
+  </contour>
+  <contour>
+   <point x=\"390\" y=\"0\" type=\"line\"/>
+   <point x=\"730\" y=\"0\" type=\"line\"/>
+   <point x=\"614\" y=\"800\" type=\"line\"/>
+   <point x=\"294\" y=\"800\" type=\"line\"/>
+  </contour>
+  <contour>
+   <point x=\"204\" y=\"540\" type=\"line\"/>
+   <point x=\"474\" y=\"540\" type=\"line\"/>
+   <point x=\"474\" y=\"800\" type=\"line\"/>
+   <point x=\"204\" y=\"800\" type=\"line\"/>
+  </contour>
+ </outline>
+ <lib>
+  <dict>
+   <key>com.typemytype.robofont.Image.Brightness</key>
+   <integer>0</integer>
+   <key>com.typemytype.robofont.Image.Contrast</key>
+   <integer>1</integer>
+   <key>com.typemytype.robofont.Image.Saturation</key>
+   <integer>1</integer>
+   <key>com.typemytype.robofont.Image.Sharpness</key>
+   <real>0.4</real>
+  </dict>
+ </lib>
+</glyph>
+";
+
+        // observed vs. expected string tests
+        assert_eq!(expected_glyph_string, test_glyph_string);
+    }
+
+    #[test]
+    fn test_format_indent_fourspace_glif() {
+        let tmp_dir = tempdir::TempDir::new("test").unwrap();
+        let src_ufo_path = Path::new("testdata/ufo/MutatorSansBoldCondensed.ufo");
+        let copy_opt = CopyOptions::new();
+        let res_ufo_copy = copy(&src_ufo_path, &tmp_dir.path(), &copy_opt);
+        assert!(res_ufo_copy.is_ok());
+        let test_ufo_path = tmp_dir.path().join("MutatorSansBoldCondensed.ufo");
+
+        let res_ufo_format = format_ufo(&test_ufo_path, &None, &None, false, true, 4);
+        assert!(res_ufo_format.is_ok());
+
+        // glif file
+        let test_glyph_string =
+            fs::read_to_string(&test_ufo_path.join("glyphs").join("A_.glif")).unwrap();
+        let expected_glyph_string = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<glyph name=\"A\" format=\"2\">
+    <unicode hex=\"0041\"/>
+    <advance width=\"740\"/>
+    <outline>
+        <contour>
+            <point x=\"-10\" y=\"0\" type=\"line\"/>
+            <point x=\"250\" y=\"0\" type=\"line\"/>
+            <point x=\"334\" y=\"800\" type=\"line\"/>
+            <point x=\"104\" y=\"800\" type=\"line\"/>
+        </contour>
+        <contour>
+            <point x=\"110\" y=\"120\" type=\"line\"/>
+            <point x=\"580\" y=\"120\" type=\"line\"/>
+            <point x=\"580\" y=\"330\" type=\"line\"/>
+            <point x=\"110\" y=\"330\" type=\"line\"/>
+        </contour>
+        <contour>
+            <point x=\"390\" y=\"0\" type=\"line\"/>
+            <point x=\"730\" y=\"0\" type=\"line\"/>
+            <point x=\"614\" y=\"800\" type=\"line\"/>
+            <point x=\"294\" y=\"800\" type=\"line\"/>
+        </contour>
+        <contour>
+            <point x=\"204\" y=\"540\" type=\"line\"/>
+            <point x=\"474\" y=\"540\" type=\"line\"/>
+            <point x=\"474\" y=\"800\" type=\"line\"/>
+            <point x=\"204\" y=\"800\" type=\"line\"/>
+        </contour>
+    </outline>
+    <lib>
+        <dict>
+            <key>com.typemytype.robofont.Image.Brightness</key>
+            <integer>0</integer>
+            <key>com.typemytype.robofont.Image.Contrast</key>
+            <integer>1</integer>
+            <key>com.typemytype.robofont.Image.Saturation</key>
+            <integer>1</integer>
+            <key>com.typemytype.robofont.Image.Sharpness</key>
+            <real>0.4</real>
+        </dict>
+    </lib>
+</glyph>
+";
+
+        // observed vs. expected string tests
+        assert_eq!(expected_glyph_string, test_glyph_string);
     }
 }

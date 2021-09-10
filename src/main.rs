@@ -63,7 +63,7 @@ struct Opt {
     #[structopt(
         long = "indent-number",
         help = "Number of indentation char per indent level (valid range = 1 - 4)",
-        default_value = "2"
+        default_value = "1"
     )]
     indent_number: u8,
 
@@ -114,7 +114,14 @@ fn main() {
         .ufopaths
         .par_iter()
         .map(|ufopath| {
-            formatters::format_ufo(ufopath, &argv.uniquename, &argv.uniqueext, argv.singlequotes)
+            formatters::format_ufo(
+                ufopath,
+                &argv.uniquename,
+                &argv.uniqueext,
+                argv.singlequotes,
+                argv.indent_with_space,
+                argv.indent_number,
+            )
         })
         .collect();
     let duration = now.elapsed().as_millis();
