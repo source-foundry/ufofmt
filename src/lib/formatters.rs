@@ -1337,4 +1337,186 @@ mod tests {
         // observed vs. expected string tests
         assert_eq!(expected_glyph_string, test_glyph_string);
     }
+
+    #[test]
+    fn test_format_indent_threetab_fontinfo_plist() {
+        let tmp_dir = tempdir::TempDir::new("test").unwrap();
+        let src_ufo_path = Path::new("testdata/ufo/MutatorSansBoldCondensed.ufo");
+        let copy_opt = CopyOptions::new();
+        let res_ufo_copy = copy(&src_ufo_path, &tmp_dir.path(), &copy_opt);
+        assert!(res_ufo_copy.is_ok());
+        let test_ufo_path = tmp_dir.path().join("MutatorSansBoldCondensed.ufo");
+
+        let res_ufo_format = format_ufo(&test_ufo_path, &None, &None, false, false, 3);
+        assert!(res_ufo_format.is_ok());
+
+        // fontinfo.plist
+        let test_fontinfo_string =
+            fs::read_to_string(&test_ufo_path.join("fontinfo.plist")).unwrap();
+
+        let expected_fontinfo_string = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">
+<plist version=\"1.0\">
+<dict>
+\t\t\t<key>ascender</key>
+\t\t\t<integer>800</integer>
+\t\t\t<key>capHeight</key>
+\t\t\t<integer>800</integer>
+\t\t\t<key>copyright</key>
+\t\t\t<string>License same as MutatorMath. BSD 3-clause. [test-token: A]</string>
+\t\t\t<key>descender</key>
+\t\t\t<integer>-200</integer>
+\t\t\t<key>familyName</key>
+\t\t\t<string>MutatorMathTest</string>
+\t\t\t<key>guidelines</key>
+\t\t\t<array/>
+\t\t\t<key>italicAngle</key>
+\t\t\t<integer>0</integer>
+\t\t\t<key>openTypeNameLicense</key>
+\t\t\t<string>License same as MutatorMath. BSD 3-clause. [test-token: A]</string>
+\t\t\t<key>openTypeOS2VendorID</key>
+\t\t\t<string>LTTR</string>
+\t\t\t<key>postscriptBlueValues</key>
+\t\t\t<array>
+\t\t\t\t\t\t<integer>-10</integer>
+\t\t\t\t\t\t<integer>0</integer>
+\t\t\t\t\t\t<integer>800</integer>
+\t\t\t\t\t\t<integer>810</integer>
+\t\t\t</array>
+\t\t\t<key>postscriptDefaultWidthX</key>
+\t\t\t<integer>500</integer>
+\t\t\t<key>postscriptFamilyBlues</key>
+\t\t\t<array/>
+\t\t\t<key>postscriptFamilyOtherBlues</key>
+\t\t\t<array/>
+\t\t\t<key>postscriptFontName</key>
+\t\t\t<string>MutatorMathTest-BoldCondensed</string>
+\t\t\t<key>postscriptFullName</key>
+\t\t\t<string>MutatorMathTest BoldCondensed</string>
+\t\t\t<key>postscriptOtherBlues</key>
+\t\t\t<array>
+\t\t\t\t\t\t<integer>500</integer>
+\t\t\t\t\t\t<integer>520</integer>
+\t\t\t</array>
+\t\t\t<key>postscriptSlantAngle</key>
+\t\t\t<integer>0</integer>
+\t\t\t<key>postscriptStemSnapH</key>
+\t\t\t<array/>
+\t\t\t<key>postscriptStemSnapV</key>
+\t\t\t<array/>
+\t\t\t<key>postscriptWindowsCharacterSet</key>
+\t\t\t<integer>1</integer>
+\t\t\t<key>styleMapFamilyName</key>
+\t\t\t<string></string>
+\t\t\t<key>styleMapStyleName</key>
+\t\t\t<string>regular</string>
+\t\t\t<key>styleName</key>
+\t\t\t<string>BoldCondensed</string>
+\t\t\t<key>unitsPerEm</key>
+\t\t\t<integer>1000</integer>
+\t\t\t<key>versionMajor</key>
+\t\t\t<integer>1</integer>
+\t\t\t<key>versionMinor</key>
+\t\t\t<integer>2</integer>
+\t\t\t<key>xHeight</key>
+\t\t\t<integer>500</integer>
+\t\t\t<key>year</key>
+\t\t\t<integer>2004</integer>
+</dict>
+</plist>";
+
+        // observed vs. expected string tests
+        assert_eq!(expected_fontinfo_string, test_fontinfo_string);
+    }
+
+    #[test]
+    fn test_format_indent_twospace_fontinfo_plist() {
+        let tmp_dir = tempdir::TempDir::new("test").unwrap();
+        let src_ufo_path = Path::new("testdata/ufo/MutatorSansBoldCondensed.ufo");
+        let copy_opt = CopyOptions::new();
+        let res_ufo_copy = copy(&src_ufo_path, &tmp_dir.path(), &copy_opt);
+        assert!(res_ufo_copy.is_ok());
+        let test_ufo_path = tmp_dir.path().join("MutatorSansBoldCondensed.ufo");
+
+        let res_ufo_format = format_ufo(&test_ufo_path, &None, &None, false, true, 2);
+        assert!(res_ufo_format.is_ok());
+
+        // fontinfo.plist
+        let test_fontinfo_string =
+            fs::read_to_string(&test_ufo_path.join("fontinfo.plist")).unwrap();
+
+        let expected_fontinfo_string = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">
+<plist version=\"1.0\">
+<dict>
+  <key>ascender</key>
+  <integer>800</integer>
+  <key>capHeight</key>
+  <integer>800</integer>
+  <key>copyright</key>
+  <string>License same as MutatorMath. BSD 3-clause. [test-token: A]</string>
+  <key>descender</key>
+  <integer>-200</integer>
+  <key>familyName</key>
+  <string>MutatorMathTest</string>
+  <key>guidelines</key>
+  <array/>
+  <key>italicAngle</key>
+  <integer>0</integer>
+  <key>openTypeNameLicense</key>
+  <string>License same as MutatorMath. BSD 3-clause. [test-token: A]</string>
+  <key>openTypeOS2VendorID</key>
+  <string>LTTR</string>
+  <key>postscriptBlueValues</key>
+  <array>
+    <integer>-10</integer>
+    <integer>0</integer>
+    <integer>800</integer>
+    <integer>810</integer>
+  </array>
+  <key>postscriptDefaultWidthX</key>
+  <integer>500</integer>
+  <key>postscriptFamilyBlues</key>
+  <array/>
+  <key>postscriptFamilyOtherBlues</key>
+  <array/>
+  <key>postscriptFontName</key>
+  <string>MutatorMathTest-BoldCondensed</string>
+  <key>postscriptFullName</key>
+  <string>MutatorMathTest BoldCondensed</string>
+  <key>postscriptOtherBlues</key>
+  <array>
+    <integer>500</integer>
+    <integer>520</integer>
+  </array>
+  <key>postscriptSlantAngle</key>
+  <integer>0</integer>
+  <key>postscriptStemSnapH</key>
+  <array/>
+  <key>postscriptStemSnapV</key>
+  <array/>
+  <key>postscriptWindowsCharacterSet</key>
+  <integer>1</integer>
+  <key>styleMapFamilyName</key>
+  <string></string>
+  <key>styleMapStyleName</key>
+  <string>regular</string>
+  <key>styleName</key>
+  <string>BoldCondensed</string>
+  <key>unitsPerEm</key>
+  <integer>1000</integer>
+  <key>versionMajor</key>
+  <integer>1</integer>
+  <key>versionMinor</key>
+  <integer>2</integer>
+  <key>xHeight</key>
+  <integer>500</integer>
+  <key>year</key>
+  <integer>2004</integer>
+</dict>
+</plist>";
+
+        // observed vs. expected string tests
+        assert_eq!(expected_fontinfo_string, test_fontinfo_string);
+    }
 }
