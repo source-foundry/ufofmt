@@ -30,7 +30,7 @@ pub(crate) fn format_ufo(
     }
 
     // define the indentation spacing format based on user CL options
-    let indentation_space = get_indent_str(indent_with_space, indent_number);
+    let indentation_str = get_indent_str(indent_with_space, indent_number);
 
     // norad lib read/write round trip formatting
     match Font::load(ufopath) {
@@ -45,7 +45,7 @@ pub(crate) fn format_ufo(
             // Norad serialization formatting options
 
             let options =
-                WriteOptions::default().whitespace(indentation_space).quote_char(quote_style);
+                WriteOptions::default().whitespace(indentation_str).quote_char(quote_style);
             // Execute serialization with options
             match ufo.save_with_options(&outpath, &options) {
                 Ok(_) => Ok(outpath),
