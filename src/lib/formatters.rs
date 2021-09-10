@@ -2125,4 +2125,584 @@ mod tests {
         // observed vs. expected string tests
         assert_eq!(expected_lc_string, test_lc_string);
     }
+
+    #[test]
+    fn test_format_indent_twotabs_lib_plist() {
+        let tmp_dir = tempdir::TempDir::new("test").unwrap();
+        let src_ufo_path = Path::new("testdata/ufo/MutatorSansBoldCondensed.ufo");
+        let copy_opt = CopyOptions::new();
+        let res_ufo_copy = copy(&src_ufo_path, &tmp_dir.path(), &copy_opt);
+        assert!(res_ufo_copy.is_ok());
+        let test_ufo_path = tmp_dir.path().join("MutatorSansBoldCondensed.ufo");
+
+        let res_ufo_format = format_ufo(&test_ufo_path, &None, &None, false, false, 2);
+        assert!(res_ufo_format.is_ok());
+
+        // lib.plist
+        let test_lib_string = fs::read_to_string(&test_ufo_path.join("lib.plist")).unwrap();
+
+        let expected_lib_string = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">
+<plist version=\"1.0\">
+<dict>
+\t\t<key>com.defcon.sortDescriptor</key>
+\t\t<array>
+\t\t\t\t<dict>
+\t\t\t\t\t\t<key>allowPseudoUnicode</key>
+\t\t\t\t\t\t<true/>
+\t\t\t\t\t\t<key>ascending</key>
+\t\t\t\t\t\t<true/>
+\t\t\t\t\t\t<key>type</key>
+\t\t\t\t\t\t<string>alphabetical</string>
+\t\t\t\t</dict>
+\t\t\t\t<dict>
+\t\t\t\t\t\t<key>allowPseudoUnicode</key>
+\t\t\t\t\t\t<true/>
+\t\t\t\t\t\t<key>ascending</key>
+\t\t\t\t\t\t<true/>
+\t\t\t\t\t\t<key>type</key>
+\t\t\t\t\t\t<string>category</string>
+\t\t\t\t</dict>
+\t\t\t\t<dict>
+\t\t\t\t\t\t<key>allowPseudoUnicode</key>
+\t\t\t\t\t\t<true/>
+\t\t\t\t\t\t<key>ascending</key>
+\t\t\t\t\t\t<true/>
+\t\t\t\t\t\t<key>type</key>
+\t\t\t\t\t\t<string>unicode</string>
+\t\t\t\t</dict>
+\t\t\t\t<dict>
+\t\t\t\t\t\t<key>allowPseudoUnicode</key>
+\t\t\t\t\t\t<true/>
+\t\t\t\t\t\t<key>ascending</key>
+\t\t\t\t\t\t<true/>
+\t\t\t\t\t\t<key>type</key>
+\t\t\t\t\t\t<string>script</string>
+\t\t\t\t</dict>
+\t\t\t\t<dict>
+\t\t\t\t\t\t<key>allowPseudoUnicode</key>
+\t\t\t\t\t\t<true/>
+\t\t\t\t\t\t<key>ascending</key>
+\t\t\t\t\t\t<true/>
+\t\t\t\t\t\t<key>type</key>
+\t\t\t\t\t\t<string>suffix</string>
+\t\t\t\t</dict>
+\t\t\t\t<dict>
+\t\t\t\t\t\t<key>allowPseudoUnicode</key>
+\t\t\t\t\t\t<true/>
+\t\t\t\t\t\t<key>ascending</key>
+\t\t\t\t\t\t<true/>
+\t\t\t\t\t\t<key>type</key>
+\t\t\t\t\t\t<string>decompositionBase</string>
+\t\t\t\t</dict>
+\t\t</array>
+\t\t<key>com.letterror.lightMeter.prefs</key>
+\t\t<dict>
+\t\t\t\t<key>chunkSize</key>
+\t\t\t\t<integer>5</integer>
+\t\t\t\t<key>diameter</key>
+\t\t\t\t<integer>200</integer>
+\t\t\t\t<key>drawTail</key>
+\t\t\t\t<false/>
+\t\t\t\t<key>invert</key>
+\t\t\t\t<false/>
+\t\t\t\t<key>toolDiameter</key>
+\t\t\t\t<integer>30</integer>
+\t\t\t\t<key>toolStyle</key>
+\t\t\t\t<string>fluid</string>
+\t\t</dict>
+\t\t<key>com.typemytype.robofont.background.layerStrokeColor</key>
+\t\t<array>
+\t\t\t\t<real>0</real>
+\t\t\t\t<real>0.8</real>
+\t\t\t\t<real>0.2</real>
+\t\t\t\t<real>0.7</real>
+\t\t</array>
+\t\t<key>com.typemytype.robofont.compileSettings.autohint</key>
+\t\t<true/>
+\t\t<key>com.typemytype.robofont.compileSettings.checkOutlines</key>
+\t\t<false/>
+\t\t<key>com.typemytype.robofont.compileSettings.createDummyDSIG</key>
+\t\t<true/>
+\t\t<key>com.typemytype.robofont.compileSettings.decompose</key>
+\t\t<false/>
+\t\t<key>com.typemytype.robofont.compileSettings.generateFormat</key>
+\t\t<integer>0</integer>
+\t\t<key>com.typemytype.robofont.compileSettings.releaseMode</key>
+\t\t<false/>
+\t\t<key>com.typemytype.robofont.foreground.layerStrokeColor</key>
+\t\t<array>
+\t\t\t\t<real>0.5</real>
+\t\t\t\t<real>0</real>
+\t\t\t\t<real>0.5</real>
+\t\t\t\t<real>0.7</real>
+\t\t</array>
+\t\t<key>com.typemytype.robofont.italicSlantOffset</key>
+\t\t<integer>0</integer>
+\t\t<key>com.typemytype.robofont.segmentType</key>
+\t\t<string>curve</string>
+\t\t<key>com.typemytype.robofont.shouldAddPointsInSplineConversion</key>
+\t\t<integer>1</integer>
+\t\t<key>com.typesupply.defcon.sortDescriptor</key>
+\t\t<array>
+\t\t\t\t<dict>
+\t\t\t\t\t\t<key>ascending</key>
+\t\t\t\t\t\t<array>
+\t\t\t\t\t\t\t\t<string>space</string>
+\t\t\t\t\t\t\t\t<string>A</string>
+\t\t\t\t\t\t\t\t<string>B</string>
+\t\t\t\t\t\t\t\t<string>C</string>
+\t\t\t\t\t\t\t\t<string>D</string>
+\t\t\t\t\t\t\t\t<string>E</string>
+\t\t\t\t\t\t\t\t<string>F</string>
+\t\t\t\t\t\t\t\t<string>G</string>
+\t\t\t\t\t\t\t\t<string>H</string>
+\t\t\t\t\t\t\t\t<string>I</string>
+\t\t\t\t\t\t\t\t<string>J</string>
+\t\t\t\t\t\t\t\t<string>K</string>
+\t\t\t\t\t\t\t\t<string>L</string>
+\t\t\t\t\t\t\t\t<string>M</string>
+\t\t\t\t\t\t\t\t<string>N</string>
+\t\t\t\t\t\t\t\t<string>O</string>
+\t\t\t\t\t\t\t\t<string>P</string>
+\t\t\t\t\t\t\t\t<string>Q</string>
+\t\t\t\t\t\t\t\t<string>R</string>
+\t\t\t\t\t\t\t\t<string>S</string>
+\t\t\t\t\t\t\t\t<string>T</string>
+\t\t\t\t\t\t\t\t<string>U</string>
+\t\t\t\t\t\t\t\t<string>V</string>
+\t\t\t\t\t\t\t\t<string>W</string>
+\t\t\t\t\t\t\t\t<string>X</string>
+\t\t\t\t\t\t\t\t<string>Y</string>
+\t\t\t\t\t\t\t\t<string>Z</string>
+\t\t\t\t\t\t\t\t<string>a</string>
+\t\t\t\t\t\t\t\t<string>b</string>
+\t\t\t\t\t\t\t\t<string>c</string>
+\t\t\t\t\t\t\t\t<string>d</string>
+\t\t\t\t\t\t\t\t<string>e</string>
+\t\t\t\t\t\t\t\t<string>f</string>
+\t\t\t\t\t\t\t\t<string>g</string>
+\t\t\t\t\t\t\t\t<string>h</string>
+\t\t\t\t\t\t\t\t<string>i</string>
+\t\t\t\t\t\t\t\t<string>j</string>
+\t\t\t\t\t\t\t\t<string>k</string>
+\t\t\t\t\t\t\t\t<string>l</string>
+\t\t\t\t\t\t\t\t<string>m</string>
+\t\t\t\t\t\t\t\t<string>n</string>
+\t\t\t\t\t\t\t\t<string>ntilde</string>
+\t\t\t\t\t\t\t\t<string>o</string>
+\t\t\t\t\t\t\t\t<string>p</string>
+\t\t\t\t\t\t\t\t<string>q</string>
+\t\t\t\t\t\t\t\t<string>r</string>
+\t\t\t\t\t\t\t\t<string>s</string>
+\t\t\t\t\t\t\t\t<string>t</string>
+\t\t\t\t\t\t\t\t<string>u</string>
+\t\t\t\t\t\t\t\t<string>v</string>
+\t\t\t\t\t\t\t\t<string>w</string>
+\t\t\t\t\t\t\t\t<string>x</string>
+\t\t\t\t\t\t\t\t<string>y</string>
+\t\t\t\t\t\t\t\t<string>z</string>
+\t\t\t\t\t\t\t\t<string>zcaron</string>
+\t\t\t\t\t\t\t\t<string>zero</string>
+\t\t\t\t\t\t\t\t<string>one</string>
+\t\t\t\t\t\t\t\t<string>two</string>
+\t\t\t\t\t\t\t\t<string>three</string>
+\t\t\t\t\t\t\t\t<string>four</string>
+\t\t\t\t\t\t\t\t<string>five</string>
+\t\t\t\t\t\t\t\t<string>six</string>
+\t\t\t\t\t\t\t\t<string>seven</string>
+\t\t\t\t\t\t\t\t<string>eight</string>
+\t\t\t\t\t\t\t\t<string>nine</string>
+\t\t\t\t\t\t\t\t<string>underscore</string>
+\t\t\t\t\t\t\t\t<string>hyphen</string>
+\t\t\t\t\t\t\t\t<string>endash</string>
+\t\t\t\t\t\t\t\t<string>emdash</string>
+\t\t\t\t\t\t\t\t<string>parenleft</string>
+\t\t\t\t\t\t\t\t<string>parenright</string>
+\t\t\t\t\t\t\t\t<string>bracketleft</string>
+\t\t\t\t\t\t\t\t<string>bracketright</string>
+\t\t\t\t\t\t\t\t<string>braceleft</string>
+\t\t\t\t\t\t\t\t<string>braceright</string>
+\t\t\t\t\t\t\t\t<string>numbersign</string>
+\t\t\t\t\t\t\t\t<string>percent</string>
+\t\t\t\t\t\t\t\t<string>period</string>
+\t\t\t\t\t\t\t\t<string>comma</string>
+\t\t\t\t\t\t\t\t<string>colon</string>
+\t\t\t\t\t\t\t\t<string>semicolon</string>
+\t\t\t\t\t\t\t\t<string>exclam</string>
+\t\t\t\t\t\t\t\t<string>question</string>
+\t\t\t\t\t\t\t\t<string>slash</string>
+\t\t\t\t\t\t\t\t<string>backslash</string>
+\t\t\t\t\t\t\t\t<string>bar</string>
+\t\t\t\t\t\t\t\t<string>at</string>
+\t\t\t\t\t\t\t\t<string>ampersand</string>
+\t\t\t\t\t\t\t\t<string>paragraph</string>
+\t\t\t\t\t\t\t\t<string>bullet</string>
+\t\t\t\t\t\t\t\t<string>dollar</string>
+\t\t\t\t\t\t\t\t<string>trademark</string>
+\t\t\t\t\t\t\t\t<string>fi</string>
+\t\t\t\t\t\t\t\t<string>fl</string>
+\t\t\t\t\t\t\t\t<string>.notdef</string>
+\t\t\t\t\t\t\t\t<string>a_b_c</string>
+\t\t\t\t\t\t\t\t<string>Atilde</string>
+\t\t\t\t\t\t\t\t<string>Adieresis</string>
+\t\t\t\t\t\t\t\t<string>Acircumflex</string>
+\t\t\t\t\t\t\t\t<string>Aring</string>
+\t\t\t\t\t\t\t\t<string>Ccedilla</string>
+\t\t\t\t\t\t\t\t<string>Agrave</string>
+\t\t\t\t\t\t\t\t<string>Aacute</string>
+\t\t\t\t\t\t\t\t<string>quotedblright</string>
+\t\t\t\t\t\t\t\t<string>quotedblleft</string>
+\t\t\t\t\t\t</array>
+\t\t\t\t\t\t<key>type</key>
+\t\t\t\t\t\t<string>glyphList</string>
+\t\t\t\t</dict>
+\t\t</array>
+\t\t<key>public.glyphOrder</key>
+\t\t<array>
+\t\t\t\t<string>A</string>
+\t\t\t\t<string>Aacute</string>
+\t\t\t\t<string>Adieresis</string>
+\t\t\t\t<string>B</string>
+\t\t\t\t<string>C</string>
+\t\t\t\t<string>D</string>
+\t\t\t\t<string>E</string>
+\t\t\t\t<string>F</string>
+\t\t\t\t<string>G</string>
+\t\t\t\t<string>H</string>
+\t\t\t\t<string>I</string>
+\t\t\t\t<string>J</string>
+\t\t\t\t<string>K</string>
+\t\t\t\t<string>L</string>
+\t\t\t\t<string>M</string>
+\t\t\t\t<string>N</string>
+\t\t\t\t<string>O</string>
+\t\t\t\t<string>P</string>
+\t\t\t\t<string>Q</string>
+\t\t\t\t<string>R</string>
+\t\t\t\t<string>S</string>
+\t\t\t\t<string>T</string>
+\t\t\t\t<string>U</string>
+\t\t\t\t<string>V</string>
+\t\t\t\t<string>W</string>
+\t\t\t\t<string>X</string>
+\t\t\t\t<string>Y</string>
+\t\t\t\t<string>Z</string>
+\t\t\t\t<string>IJ</string>
+\t\t\t\t<string>S.closed</string>
+\t\t\t\t<string>I.narrow</string>
+\t\t\t\t<string>J.narrow</string>
+\t\t\t\t<string>quotesinglbase</string>
+\t\t\t\t<string>quotedblbase</string>
+\t\t\t\t<string>quotedblleft</string>
+\t\t\t\t<string>quotedblright</string>
+\t\t\t\t<string>comma</string>
+\t\t\t\t<string>period</string>
+\t\t\t\t<string>colon</string>
+\t\t\t\t<string>semicolon</string>
+\t\t\t\t<string>dot</string>
+\t\t\t\t<string>dieresis</string>
+\t\t\t\t<string>acute</string>
+\t\t\t\t<string>space</string>
+\t\t\t\t<string>arrowdown</string>
+\t\t\t\t<string>arrowleft</string>
+\t\t\t\t<string>arrowright</string>
+\t\t\t\t<string>arrowup</string>
+\t\t</array>
+</dict>
+</plist>";
+
+        // observed vs. expected string tests
+        assert_eq!(expected_lib_string, test_lib_string);
+    }
+
+    #[test]
+    fn test_format_indent_fourspaces_lib_plist() {
+        let tmp_dir = tempdir::TempDir::new("test").unwrap();
+        let src_ufo_path = Path::new("testdata/ufo/MutatorSansBoldCondensed.ufo");
+        let copy_opt = CopyOptions::new();
+        let res_ufo_copy = copy(&src_ufo_path, &tmp_dir.path(), &copy_opt);
+        assert!(res_ufo_copy.is_ok());
+        let test_ufo_path = tmp_dir.path().join("MutatorSansBoldCondensed.ufo");
+
+        let res_ufo_format = format_ufo(&test_ufo_path, &None, &None, false, true, 4);
+        assert!(res_ufo_format.is_ok());
+
+        // lib.plist
+        let test_lib_string = fs::read_to_string(&test_ufo_path.join("lib.plist")).unwrap();
+
+        let expected_lib_string = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">
+<plist version=\"1.0\">
+<dict>
+    <key>com.defcon.sortDescriptor</key>
+    <array>
+        <dict>
+            <key>allowPseudoUnicode</key>
+            <true/>
+            <key>ascending</key>
+            <true/>
+            <key>type</key>
+            <string>alphabetical</string>
+        </dict>
+        <dict>
+            <key>allowPseudoUnicode</key>
+            <true/>
+            <key>ascending</key>
+            <true/>
+            <key>type</key>
+            <string>category</string>
+        </dict>
+        <dict>
+            <key>allowPseudoUnicode</key>
+            <true/>
+            <key>ascending</key>
+            <true/>
+            <key>type</key>
+            <string>unicode</string>
+        </dict>
+        <dict>
+            <key>allowPseudoUnicode</key>
+            <true/>
+            <key>ascending</key>
+            <true/>
+            <key>type</key>
+            <string>script</string>
+        </dict>
+        <dict>
+            <key>allowPseudoUnicode</key>
+            <true/>
+            <key>ascending</key>
+            <true/>
+            <key>type</key>
+            <string>suffix</string>
+        </dict>
+        <dict>
+            <key>allowPseudoUnicode</key>
+            <true/>
+            <key>ascending</key>
+            <true/>
+            <key>type</key>
+            <string>decompositionBase</string>
+        </dict>
+    </array>
+    <key>com.letterror.lightMeter.prefs</key>
+    <dict>
+        <key>chunkSize</key>
+        <integer>5</integer>
+        <key>diameter</key>
+        <integer>200</integer>
+        <key>drawTail</key>
+        <false/>
+        <key>invert</key>
+        <false/>
+        <key>toolDiameter</key>
+        <integer>30</integer>
+        <key>toolStyle</key>
+        <string>fluid</string>
+    </dict>
+    <key>com.typemytype.robofont.background.layerStrokeColor</key>
+    <array>
+        <real>0</real>
+        <real>0.8</real>
+        <real>0.2</real>
+        <real>0.7</real>
+    </array>
+    <key>com.typemytype.robofont.compileSettings.autohint</key>
+    <true/>
+    <key>com.typemytype.robofont.compileSettings.checkOutlines</key>
+    <false/>
+    <key>com.typemytype.robofont.compileSettings.createDummyDSIG</key>
+    <true/>
+    <key>com.typemytype.robofont.compileSettings.decompose</key>
+    <false/>
+    <key>com.typemytype.robofont.compileSettings.generateFormat</key>
+    <integer>0</integer>
+    <key>com.typemytype.robofont.compileSettings.releaseMode</key>
+    <false/>
+    <key>com.typemytype.robofont.foreground.layerStrokeColor</key>
+    <array>
+        <real>0.5</real>
+        <real>0</real>
+        <real>0.5</real>
+        <real>0.7</real>
+    </array>
+    <key>com.typemytype.robofont.italicSlantOffset</key>
+    <integer>0</integer>
+    <key>com.typemytype.robofont.segmentType</key>
+    <string>curve</string>
+    <key>com.typemytype.robofont.shouldAddPointsInSplineConversion</key>
+    <integer>1</integer>
+    <key>com.typesupply.defcon.sortDescriptor</key>
+    <array>
+        <dict>
+            <key>ascending</key>
+            <array>
+                <string>space</string>
+                <string>A</string>
+                <string>B</string>
+                <string>C</string>
+                <string>D</string>
+                <string>E</string>
+                <string>F</string>
+                <string>G</string>
+                <string>H</string>
+                <string>I</string>
+                <string>J</string>
+                <string>K</string>
+                <string>L</string>
+                <string>M</string>
+                <string>N</string>
+                <string>O</string>
+                <string>P</string>
+                <string>Q</string>
+                <string>R</string>
+                <string>S</string>
+                <string>T</string>
+                <string>U</string>
+                <string>V</string>
+                <string>W</string>
+                <string>X</string>
+                <string>Y</string>
+                <string>Z</string>
+                <string>a</string>
+                <string>b</string>
+                <string>c</string>
+                <string>d</string>
+                <string>e</string>
+                <string>f</string>
+                <string>g</string>
+                <string>h</string>
+                <string>i</string>
+                <string>j</string>
+                <string>k</string>
+                <string>l</string>
+                <string>m</string>
+                <string>n</string>
+                <string>ntilde</string>
+                <string>o</string>
+                <string>p</string>
+                <string>q</string>
+                <string>r</string>
+                <string>s</string>
+                <string>t</string>
+                <string>u</string>
+                <string>v</string>
+                <string>w</string>
+                <string>x</string>
+                <string>y</string>
+                <string>z</string>
+                <string>zcaron</string>
+                <string>zero</string>
+                <string>one</string>
+                <string>two</string>
+                <string>three</string>
+                <string>four</string>
+                <string>five</string>
+                <string>six</string>
+                <string>seven</string>
+                <string>eight</string>
+                <string>nine</string>
+                <string>underscore</string>
+                <string>hyphen</string>
+                <string>endash</string>
+                <string>emdash</string>
+                <string>parenleft</string>
+                <string>parenright</string>
+                <string>bracketleft</string>
+                <string>bracketright</string>
+                <string>braceleft</string>
+                <string>braceright</string>
+                <string>numbersign</string>
+                <string>percent</string>
+                <string>period</string>
+                <string>comma</string>
+                <string>colon</string>
+                <string>semicolon</string>
+                <string>exclam</string>
+                <string>question</string>
+                <string>slash</string>
+                <string>backslash</string>
+                <string>bar</string>
+                <string>at</string>
+                <string>ampersand</string>
+                <string>paragraph</string>
+                <string>bullet</string>
+                <string>dollar</string>
+                <string>trademark</string>
+                <string>fi</string>
+                <string>fl</string>
+                <string>.notdef</string>
+                <string>a_b_c</string>
+                <string>Atilde</string>
+                <string>Adieresis</string>
+                <string>Acircumflex</string>
+                <string>Aring</string>
+                <string>Ccedilla</string>
+                <string>Agrave</string>
+                <string>Aacute</string>
+                <string>quotedblright</string>
+                <string>quotedblleft</string>
+            </array>
+            <key>type</key>
+            <string>glyphList</string>
+        </dict>
+    </array>
+    <key>public.glyphOrder</key>
+    <array>
+        <string>A</string>
+        <string>Aacute</string>
+        <string>Adieresis</string>
+        <string>B</string>
+        <string>C</string>
+        <string>D</string>
+        <string>E</string>
+        <string>F</string>
+        <string>G</string>
+        <string>H</string>
+        <string>I</string>
+        <string>J</string>
+        <string>K</string>
+        <string>L</string>
+        <string>M</string>
+        <string>N</string>
+        <string>O</string>
+        <string>P</string>
+        <string>Q</string>
+        <string>R</string>
+        <string>S</string>
+        <string>T</string>
+        <string>U</string>
+        <string>V</string>
+        <string>W</string>
+        <string>X</string>
+        <string>Y</string>
+        <string>Z</string>
+        <string>IJ</string>
+        <string>S.closed</string>
+        <string>I.narrow</string>
+        <string>J.narrow</string>
+        <string>quotesinglbase</string>
+        <string>quotedblbase</string>
+        <string>quotedblleft</string>
+        <string>quotedblright</string>
+        <string>comma</string>
+        <string>period</string>
+        <string>colon</string>
+        <string>semicolon</string>
+        <string>dot</string>
+        <string>dieresis</string>
+        <string>acute</string>
+        <string>space</string>
+        <string>arrowdown</string>
+        <string>arrowleft</string>
+        <string>arrowright</string>
+        <string>arrowup</string>
+    </array>
+</dict>
+</plist>";
+
+        // observed vs. expected string tests
+        assert_eq!(expected_lib_string, test_lib_string);
+    }
 }
