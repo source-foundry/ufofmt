@@ -2705,4 +2705,64 @@ mod tests {
         // observed vs. expected string tests
         assert_eq!(expected_lib_string, test_lib_string);
     }
+
+    #[test]
+    fn test_format_indent_twotabs_metainfo_plist() {
+        let tmp_dir = tempdir::TempDir::new("test").unwrap();
+        let src_ufo_path = Path::new("testdata/ufo/MutatorSansBoldCondensed.ufo");
+        let copy_opt = CopyOptions::new();
+        let res_ufo_copy = copy(&src_ufo_path, &tmp_dir.path(), &copy_opt);
+        assert!(res_ufo_copy.is_ok());
+        let test_ufo_path = tmp_dir.path().join("MutatorSansBoldCondensed.ufo");
+
+        let res_ufo_format = format_ufo(&test_ufo_path, &None, &None, false, false, 2);
+        assert!(res_ufo_format.is_ok());
+
+        // metainfo.plist
+        let test_mi_string = fs::read_to_string(&test_ufo_path.join("metainfo.plist")).unwrap();
+
+        let expected_mi_string = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">
+<plist version=\"1.0\">
+<dict>
+\t\t<key>creator</key>
+\t\t<string>org.linebender.norad</string>
+\t\t<key>formatVersion</key>
+\t\t<integer>3</integer>
+</dict>
+</plist>";
+
+        // observed vs. expected string tests
+        assert_eq!(expected_mi_string, test_mi_string);
+    }
+
+    #[test]
+    fn test_format_indent_fourspaces_metainfo_plist() {
+        let tmp_dir = tempdir::TempDir::new("test").unwrap();
+        let src_ufo_path = Path::new("testdata/ufo/MutatorSansBoldCondensed.ufo");
+        let copy_opt = CopyOptions::new();
+        let res_ufo_copy = copy(&src_ufo_path, &tmp_dir.path(), &copy_opt);
+        assert!(res_ufo_copy.is_ok());
+        let test_ufo_path = tmp_dir.path().join("MutatorSansBoldCondensed.ufo");
+
+        let res_ufo_format = format_ufo(&test_ufo_path, &None, &None, false, true, 4);
+        assert!(res_ufo_format.is_ok());
+
+        // metainfo.plist
+        let test_mi_string = fs::read_to_string(&test_ufo_path.join("metainfo.plist")).unwrap();
+
+        let expected_mi_string = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">
+<plist version=\"1.0\">
+<dict>
+    <key>creator</key>
+    <string>org.linebender.norad</string>
+    <key>formatVersion</key>
+    <integer>3</integer>
+</dict>
+</plist>";
+
+        // observed vs. expected string tests
+        assert_eq!(expected_mi_string, test_mi_string);
+    }
 }
