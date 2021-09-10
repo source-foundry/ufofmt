@@ -1597,4 +1597,464 @@ mod tests {
         // observed vs. expected string tests
         assert_eq!(expected_groups_string, test_groups_string);
     }
+
+    #[test]
+    fn test_format_indent_twotab_kerning_plist() {
+        let tmp_dir = tempdir::TempDir::new("test").unwrap();
+        let src_ufo_path = Path::new("testdata/ufo/MutatorSansBoldCondensed.ufo");
+        let copy_opt = CopyOptions::new();
+        let res_ufo_copy = copy(&src_ufo_path, &tmp_dir.path(), &copy_opt);
+        assert!(res_ufo_copy.is_ok());
+        let test_ufo_path = tmp_dir.path().join("MutatorSansBoldCondensed.ufo");
+
+        let res_ufo_format = format_ufo(&test_ufo_path, &None, &None, false, false, 2);
+        assert!(res_ufo_format.is_ok());
+
+        // kerning.plist
+        let test_kerning_string = fs::read_to_string(&test_ufo_path.join("kerning.plist")).unwrap();
+
+        let expected_kerning_string = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">
+<plist version=\"1.0\">
+<dict>
+\t\t<key>A</key>
+\t\t<dict>
+\t\t\t\t<key>J</key>
+\t\t\t\t<integer>-20</integer>
+\t\t\t\t<key>O</key>
+\t\t\t\t<integer>-30</integer>
+\t\t\t\t<key>T</key>
+\t\t\t\t<integer>-70</integer>
+\t\t\t\t<key>U</key>
+\t\t\t\t<integer>-30</integer>
+\t\t\t\t<key>V</key>
+\t\t\t\t<integer>-50</integer>
+\t\t</dict>
+\t\t<key>B</key>
+\t\t<dict>
+\t\t\t\t<key>A</key>
+\t\t\t\t<integer>-20</integer>
+\t\t\t\t<key>J</key>
+\t\t\t\t<integer>-50</integer>
+\t\t\t\t<key>O</key>
+\t\t\t\t<integer>-20</integer>
+\t\t\t\t<key>S</key>
+\t\t\t\t<integer>-10</integer>
+\t\t\t\t<key>T</key>
+\t\t\t\t<integer>-10</integer>
+\t\t\t\t<key>U</key>
+\t\t\t\t<integer>-20</integer>
+\t\t\t\t<key>V</key>
+\t\t\t\t<integer>-30</integer>
+\t\t</dict>
+\t\t<key>C</key>
+\t\t<dict>
+\t\t\t\t<key>A</key>
+\t\t\t\t<integer>-20</integer>
+\t\t\t\t<key>J</key>
+\t\t\t\t<integer>-50</integer>
+\t\t\t\t<key>T</key>
+\t\t\t\t<integer>-20</integer>
+\t\t\t\t<key>V</key>
+\t\t\t\t<integer>-20</integer>
+\t\t</dict>
+\t\t<key>E</key>
+\t\t<dict>
+\t\t\t\t<key>J</key>
+\t\t\t\t<integer>-20</integer>
+\t\t\t\t<key>T</key>
+\t\t\t\t<integer>-10</integer>
+\t\t\t\t<key>V</key>
+\t\t\t\t<integer>-10</integer>
+\t\t</dict>
+\t\t<key>F</key>
+\t\t<dict>
+\t\t\t\t<key>A</key>
+\t\t\t\t<integer>-40</integer>
+\t\t\t\t<key>J</key>
+\t\t\t\t<integer>-80</integer>
+\t\t\t\t<key>O</key>
+\t\t\t\t<integer>-10</integer>
+\t\t\t\t<key>S</key>
+\t\t\t\t<integer>-20</integer>
+\t\t\t\t<key>U</key>
+\t\t\t\t<integer>-10</integer>
+\t\t\t\t<key>V</key>
+\t\t\t\t<integer>-10</integer>
+\t\t</dict>
+\t\t<key>G</key>
+\t\t<dict>
+\t\t\t\t<key>J</key>
+\t\t\t\t<integer>-20</integer>
+\t\t\t\t<key>S</key>
+\t\t\t\t<integer>-10</integer>
+\t\t\t\t<key>T</key>
+\t\t\t\t<integer>-40</integer>
+\t\t\t\t<key>U</key>
+\t\t\t\t<integer>-10</integer>
+\t\t\t\t<key>V</key>
+\t\t\t\t<integer>-30</integer>
+\t\t</dict>
+\t\t<key>H</key>
+\t\t<dict>
+\t\t\t\t<key>J</key>
+\t\t\t\t<integer>-30</integer>
+\t\t\t\t<key>S</key>
+\t\t\t\t<integer>-10</integer>
+\t\t\t\t<key>T</key>
+\t\t\t\t<integer>-10</integer>
+\t\t</dict>
+\t\t<key>J</key>
+\t\t<dict>
+\t\t\t\t<key>J</key>
+\t\t\t\t<integer>-70</integer>
+\t\t</dict>
+\t\t<key>L</key>
+\t\t<dict>
+\t\t\t\t<key>J</key>
+\t\t\t\t<integer>-20</integer>
+\t\t\t\t<key>O</key>
+\t\t\t\t<integer>-20</integer>
+\t\t\t\t<key>T</key>
+\t\t\t\t<integer>-110</integer>
+\t\t\t\t<key>U</key>
+\t\t\t\t<integer>-20</integer>
+\t\t\t\t<key>V</key>
+\t\t\t\t<integer>-60</integer>
+\t\t</dict>
+\t\t<key>O</key>
+\t\t<dict>
+\t\t\t\t<key>A</key>
+\t\t\t\t<integer>-30</integer>
+\t\t\t\t<key>J</key>
+\t\t\t\t<integer>-60</integer>
+\t\t\t\t<key>S</key>
+\t\t\t\t<integer>-10</integer>
+\t\t\t\t<key>T</key>
+\t\t\t\t<integer>-30</integer>
+\t\t\t\t<key>V</key>
+\t\t\t\t<integer>-30</integer>
+\t\t</dict>
+\t\t<key>P</key>
+\t\t<dict>
+\t\t\t\t<key>A</key>
+\t\t\t\t<integer>-50</integer>
+\t\t\t\t<key>J</key>
+\t\t\t\t<integer>-100</integer>
+\t\t\t\t<key>S</key>
+\t\t\t\t<integer>-10</integer>
+\t\t\t\t<key>T</key>
+\t\t\t\t<integer>-10</integer>
+\t\t\t\t<key>U</key>
+\t\t\t\t<integer>-10</integer>
+\t\t\t\t<key>V</key>
+\t\t\t\t<integer>-20</integer>
+\t\t</dict>
+\t\t<key>R</key>
+\t\t<dict>
+\t\t\t\t<key>H</key>
+\t\t\t\t<integer>-10</integer>
+\t\t\t\t<key>J</key>
+\t\t\t\t<integer>-20</integer>
+\t\t\t\t<key>O</key>
+\t\t\t\t<integer>-30</integer>
+\t\t\t\t<key>S</key>
+\t\t\t\t<integer>-20</integer>
+\t\t\t\t<key>T</key>
+\t\t\t\t<integer>-30</integer>
+\t\t\t\t<key>U</key>
+\t\t\t\t<integer>-30</integer>
+\t\t\t\t<key>V</key>
+\t\t\t\t<integer>-40</integer>
+\t\t</dict>
+\t\t<key>S</key>
+\t\t<dict>
+\t\t\t\t<key>A</key>
+\t\t\t\t<integer>-20</integer>
+\t\t\t\t<key>H</key>
+\t\t\t\t<integer>-20</integer>
+\t\t\t\t<key>J</key>
+\t\t\t\t<integer>-40</integer>
+\t\t\t\t<key>O</key>
+\t\t\t\t<integer>-10</integer>
+\t\t\t\t<key>S</key>
+\t\t\t\t<integer>-10</integer>
+\t\t\t\t<key>T</key>
+\t\t\t\t<integer>-30</integer>
+\t\t\t\t<key>U</key>
+\t\t\t\t<integer>-10</integer>
+\t\t\t\t<key>V</key>
+\t\t\t\t<integer>-30</integer>
+\t\t\t\t<key>W</key>
+\t\t\t\t<integer>-10</integer>
+\t\t</dict>
+\t\t<key>T</key>
+\t\t<dict>
+\t\t\t\t<key>A</key>
+\t\t\t\t<integer>-65</integer>
+\t\t\t\t<key>H</key>
+\t\t\t\t<integer>-10</integer>
+\t\t\t\t<key>J</key>
+\t\t\t\t<integer>-130</integer>
+\t\t\t\t<key>O</key>
+\t\t\t\t<integer>-20</integer>
+\t\t</dict>
+\t\t<key>U</key>
+\t\t<dict>
+\t\t\t\t<key>A</key>
+\t\t\t\t<integer>-30</integer>
+\t\t\t\t<key>J</key>
+\t\t\t\t<integer>-60</integer>
+\t\t\t\t<key>S</key>
+\t\t\t\t<integer>-10</integer>
+\t\t\t\t<key>V</key>
+\t\t\t\t<integer>-10</integer>
+\t\t</dict>
+\t\t<key>V</key>
+\t\t<dict>
+\t\t\t\t<key>J</key>
+\t\t\t\t<integer>-100</integer>
+\t\t\t\t<key>O</key>
+\t\t\t\t<integer>-30</integer>
+\t\t\t\t<key>S</key>
+\t\t\t\t<integer>-20</integer>
+\t\t\t\t<key>U</key>
+\t\t\t\t<integer>-10</integer>
+\t\t</dict>
+</dict>
+</plist>";
+
+        // observed vs. expected string tests
+        assert_eq!(expected_kerning_string, test_kerning_string);
+    }
+
+    #[test]
+    fn test_format_indent_fourspace_kerning_plist() {
+        let tmp_dir = tempdir::TempDir::new("test").unwrap();
+        let src_ufo_path = Path::new("testdata/ufo/MutatorSansBoldCondensed.ufo");
+        let copy_opt = CopyOptions::new();
+        let res_ufo_copy = copy(&src_ufo_path, &tmp_dir.path(), &copy_opt);
+        assert!(res_ufo_copy.is_ok());
+        let test_ufo_path = tmp_dir.path().join("MutatorSansBoldCondensed.ufo");
+
+        let res_ufo_format = format_ufo(&test_ufo_path, &None, &None, false, true, 4);
+        assert!(res_ufo_format.is_ok());
+
+        // kerning.plist
+        let test_kerning_string = fs::read_to_string(&test_ufo_path.join("kerning.plist")).unwrap();
+
+        let expected_kerning_string = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">
+<plist version=\"1.0\">
+<dict>
+    <key>A</key>
+    <dict>
+        <key>J</key>
+        <integer>-20</integer>
+        <key>O</key>
+        <integer>-30</integer>
+        <key>T</key>
+        <integer>-70</integer>
+        <key>U</key>
+        <integer>-30</integer>
+        <key>V</key>
+        <integer>-50</integer>
+    </dict>
+    <key>B</key>
+    <dict>
+        <key>A</key>
+        <integer>-20</integer>
+        <key>J</key>
+        <integer>-50</integer>
+        <key>O</key>
+        <integer>-20</integer>
+        <key>S</key>
+        <integer>-10</integer>
+        <key>T</key>
+        <integer>-10</integer>
+        <key>U</key>
+        <integer>-20</integer>
+        <key>V</key>
+        <integer>-30</integer>
+    </dict>
+    <key>C</key>
+    <dict>
+        <key>A</key>
+        <integer>-20</integer>
+        <key>J</key>
+        <integer>-50</integer>
+        <key>T</key>
+        <integer>-20</integer>
+        <key>V</key>
+        <integer>-20</integer>
+    </dict>
+    <key>E</key>
+    <dict>
+        <key>J</key>
+        <integer>-20</integer>
+        <key>T</key>
+        <integer>-10</integer>
+        <key>V</key>
+        <integer>-10</integer>
+    </dict>
+    <key>F</key>
+    <dict>
+        <key>A</key>
+        <integer>-40</integer>
+        <key>J</key>
+        <integer>-80</integer>
+        <key>O</key>
+        <integer>-10</integer>
+        <key>S</key>
+        <integer>-20</integer>
+        <key>U</key>
+        <integer>-10</integer>
+        <key>V</key>
+        <integer>-10</integer>
+    </dict>
+    <key>G</key>
+    <dict>
+        <key>J</key>
+        <integer>-20</integer>
+        <key>S</key>
+        <integer>-10</integer>
+        <key>T</key>
+        <integer>-40</integer>
+        <key>U</key>
+        <integer>-10</integer>
+        <key>V</key>
+        <integer>-30</integer>
+    </dict>
+    <key>H</key>
+    <dict>
+        <key>J</key>
+        <integer>-30</integer>
+        <key>S</key>
+        <integer>-10</integer>
+        <key>T</key>
+        <integer>-10</integer>
+    </dict>
+    <key>J</key>
+    <dict>
+        <key>J</key>
+        <integer>-70</integer>
+    </dict>
+    <key>L</key>
+    <dict>
+        <key>J</key>
+        <integer>-20</integer>
+        <key>O</key>
+        <integer>-20</integer>
+        <key>T</key>
+        <integer>-110</integer>
+        <key>U</key>
+        <integer>-20</integer>
+        <key>V</key>
+        <integer>-60</integer>
+    </dict>
+    <key>O</key>
+    <dict>
+        <key>A</key>
+        <integer>-30</integer>
+        <key>J</key>
+        <integer>-60</integer>
+        <key>S</key>
+        <integer>-10</integer>
+        <key>T</key>
+        <integer>-30</integer>
+        <key>V</key>
+        <integer>-30</integer>
+    </dict>
+    <key>P</key>
+    <dict>
+        <key>A</key>
+        <integer>-50</integer>
+        <key>J</key>
+        <integer>-100</integer>
+        <key>S</key>
+        <integer>-10</integer>
+        <key>T</key>
+        <integer>-10</integer>
+        <key>U</key>
+        <integer>-10</integer>
+        <key>V</key>
+        <integer>-20</integer>
+    </dict>
+    <key>R</key>
+    <dict>
+        <key>H</key>
+        <integer>-10</integer>
+        <key>J</key>
+        <integer>-20</integer>
+        <key>O</key>
+        <integer>-30</integer>
+        <key>S</key>
+        <integer>-20</integer>
+        <key>T</key>
+        <integer>-30</integer>
+        <key>U</key>
+        <integer>-30</integer>
+        <key>V</key>
+        <integer>-40</integer>
+    </dict>
+    <key>S</key>
+    <dict>
+        <key>A</key>
+        <integer>-20</integer>
+        <key>H</key>
+        <integer>-20</integer>
+        <key>J</key>
+        <integer>-40</integer>
+        <key>O</key>
+        <integer>-10</integer>
+        <key>S</key>
+        <integer>-10</integer>
+        <key>T</key>
+        <integer>-30</integer>
+        <key>U</key>
+        <integer>-10</integer>
+        <key>V</key>
+        <integer>-30</integer>
+        <key>W</key>
+        <integer>-10</integer>
+    </dict>
+    <key>T</key>
+    <dict>
+        <key>A</key>
+        <integer>-65</integer>
+        <key>H</key>
+        <integer>-10</integer>
+        <key>J</key>
+        <integer>-130</integer>
+        <key>O</key>
+        <integer>-20</integer>
+    </dict>
+    <key>U</key>
+    <dict>
+        <key>A</key>
+        <integer>-30</integer>
+        <key>J</key>
+        <integer>-60</integer>
+        <key>S</key>
+        <integer>-10</integer>
+        <key>V</key>
+        <integer>-10</integer>
+    </dict>
+    <key>V</key>
+    <dict>
+        <key>J</key>
+        <integer>-100</integer>
+        <key>O</key>
+        <integer>-30</integer>
+        <key>S</key>
+        <integer>-20</integer>
+        <key>U</key>
+        <integer>-10</integer>
+    </dict>
+</dict>
+</plist>";
+
+        // observed vs. expected string tests
+        assert_eq!(expected_kerning_string, test_kerning_string);
+    }
 }
