@@ -57,6 +57,16 @@ struct Opt {
     )]
     singlequotes: bool,
 
+    #[structopt(long = "indent-space", help = "Use space char for indentation [default: tab]")]
+    indent_with_space: bool,
+
+    #[structopt(
+        long = "indent-number",
+        help = "Number of indentation char per indent level (valid range = 1 - 4)",
+        default_value = "1"
+    )]
+    indent_number: u8,
+
     /// Display timing data
     #[structopt(short = "t", long = "time", help = "Display timing data")]
     time: bool,
@@ -86,6 +96,17 @@ fn main() {
     let argv = Opt::from_args();
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // CL arg validation checks
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    if argv.indent_number > 4 || argv.indent_number < 1 {
+        eprintln!(
+            "{} indentation char number must be a value between 1 - 4",
+            *errors::ERROR_INDICATOR,
+        );
+        std::process::exit(1);
+    }
+
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // Source formatting execution
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~
     let now = Instant::now();
@@ -93,7 +114,14 @@ fn main() {
         .ufopaths
         .par_iter()
         .map(|ufopath| {
-            formatters::format_ufo(ufopath, &argv.uniquename, &argv.uniqueext, argv.singlequotes)
+            formatters::format_ufo(
+                ufopath,
+                &argv.uniquename,
+                &argv.uniqueext,
+                argv.singlequotes,
+                argv.indent_with_space,
+                argv.indent_number,
+            )
         })
         .collect();
     let duration = now.elapsed().as_millis();
