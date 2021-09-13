@@ -1,8 +1,19 @@
 # Changelog
 
+## v0.5.0
+
+- add custom indentation spacing support (1 - 4 tabs or spaces)
+- Dependency updates:
+  - bump ctor v0.1.20 -> v0.1.21
+  - bump proc-macro2 v1.0.28 -> v1.0.29
+  - bump serde v1.0.129 -> v1.0.130
+  - bump serde_derive v1.0.129 -> v1.0.130
+  - bump structopt v0.3.22 -> v0.3.23
+  - bump syn v1.0.75 -> v1.0.76
+
 ## v0.4.1
 
-- Cargo.lock dependency updates (includes bump beyond yanked version of crossbeam-deque):
+- Dependency updates (includes bump beyond yanked version of crossbeam-deque):
   - bump bitflags v1.2.1 -> v1.3.2
   - bump crossbeam-deque v0.8.0 -> v0.8.1
   - bump libc v0.2.98 -> v0.2.101
