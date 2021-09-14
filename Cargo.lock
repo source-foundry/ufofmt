@@ -252,9 +252,9 @@ dependencies = [
 
 [[package]]
 name = "norad"
-version = "0.5.0"
+version = "0.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e16677cae7df6b694a1591afb2c4ffdb9caf058bfd23bf245a0a05b3d2f81384"
+checksum = "cd95c066de3e81b59fcbe582748c78195120dc8d8f1efd78b9697ad59852680a"
 dependencies = [
  "plist",
  "quick-xml",
