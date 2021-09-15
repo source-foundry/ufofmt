@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.6.0
+
+- add consistent cross-platform line feed line ending serialization across plist, glif, and feature files
+- Dependency updates:
+  - bump libc v0.2.101 -> v0.2.102
+
 ## v0.5.0
 
 - add custom indentation spacing support (1 - 4 tabs or spaces)
