@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.7.0
+
+- Convert to f64 float value formatting for all numeric fields in the UFO specification that use floats
+- Add support for metainfo.plist minor version field, addresses a UFO specification update (https://unifiedfontobject.org/versions/ufo3/metainfo.plist/)
+- Dependency updates:
+  - norad v0.5.1 -> v0.6.0
+  - pretty_assertions from v0.7.2 to v1.0.0
+  - structopt from v0.3.23 to v0.3.25
+
 ## v0.6.0
 
 - add consistent cross-platform line feed line ending serialization across plist, glif, and feature files
