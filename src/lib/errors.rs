@@ -19,14 +19,29 @@ pub(crate) enum Error {
     NoradWrite(PathBuf, norad::Error),
 }
 
+fn chained_error_fmt(
+    e: &impl std::error::Error,
+    f: &mut std::fmt::Formatter<'_>,
+) -> std::fmt::Result {
+    writeln!(f, "{}\n", e)?;
+    let mut current = e.source();
+    while let Some(cause) = current {
+        writeln!(f, "Caused by:\n\t{}", cause)?;
+        current = cause.source();
+    }
+    Ok(())
+}
+
 impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter) -> std::result::Result<(), fmt::Error> {
         match &self {
             Error::NoradRead(p, e) => {
-                write!(f, "norad read error: {}: {}", p.display(), e)
+                writeln!(f, "norad read error: {}", p.display())?;
+                chained_error_fmt(e, f)
             }
             Error::NoradWrite(p, e) => {
-                write!(f, "norad write error: {}: {}", p.display(), e)
+                writeln!(f, "norad write error: {}", p.display())?;
+                chained_error_fmt(e, f)
             }
             Error::InvalidPath(p) => {
                 write!(f, "invalid path error: {} was not found", p.display())
