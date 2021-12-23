@@ -19,15 +19,16 @@ pub(crate) enum Error {
     NoradWrite(PathBuf, norad::Error),
 }
 
+// Implementation adapted from https://www.lpalmieri.com/posts/error-handling-rust/
 fn chained_error_fmt(
     e: &impl std::error::Error,
     f: &mut std::fmt::Formatter<'_>,
 ) -> std::fmt::Result {
     writeln!(f, "{}\n", e)?;
-    let mut current = e.source();
-    while let Some(cause) = current {
-        writeln!(f, "Caused by:\n\t{}", cause)?;
-        current = cause.source();
+    let mut current_err = e.source();
+    while let Some(err_cause) = current_err {
+        writeln!(f, "Caused by:\n\t{}", err_cause)?;
+        current_err = err_cause.source();
     }
     Ok(())
 }
