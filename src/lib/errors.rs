@@ -15,8 +15,8 @@ lazy_static! {
 #[derive(Debug)]
 pub(crate) enum Error {
     InvalidPath(PathBuf),
-    NoradRead(PathBuf, norad::Error),
-    NoradWrite(PathBuf, norad::Error),
+    NoradRead(PathBuf, norad::error::FontLoadError),
+    NoradWrite(PathBuf, norad::error::FontWriteError),
 }
 
 // Implementation adapted from https://www.lpalmieri.com/posts/error-handling-rust/
@@ -65,14 +65,14 @@ mod tests {
 
     #[test]
     fn test_ufofmterror_read() {
-        let ne = norad::Error::MissingLayer("test".to_owned());
+        let ne = norad::error::FontLoadError::MissingDefaultLayer;
         let ufe = Error::NoradRead(PathBuf::from("test.ufo"), ne);
         assert!(ufe.to_string().starts_with("norad read error: "));
     }
 
     #[test]
     fn test_ufofmterror_write() {
-        let ne = norad::Error::MissingLayer("test".to_owned());
+        let ne = norad::error::FontWriteError::PreexistingPublicObjectLibsKey;
         let ufe = Error::NoradWrite(PathBuf::from("test.ufo"), ne);
         assert!(ufe.to_string().starts_with("norad write error: "));
     }
