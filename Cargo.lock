@@ -541,7 +541,7 @@ dependencies = [
 
 [[package]]
 name = "ufofmt"
-version = "0.7.1"
+version = "0.7.2-dev.0"
 dependencies = [
  "colored",
  "fs_extra",
