@@ -20,14 +20,13 @@ pub(crate) fn format_ufo(
         return Err(Error::InvalidPath(ufopath.into()));
     }
     // define out directory path based on optional user-specified command line options
-    let outpath;
-    if unique_filename.is_some() || unique_extension.is_some() {
-        outpath = utils::get_ufo_outpath(ufopath, unique_filename, unique_extension);
+    let outpath: PathBuf = if unique_filename.is_some() || unique_extension.is_some() {
+        utils::get_ufo_outpath(ufopath, unique_filename, unique_extension)
     } else {
         // if the user did not specify options for custom file name or custom
         // extension, then write in place over the in path
-        outpath = ufopath.to_path_buf();
-    }
+        ufopath.to_path_buf()
+    };
 
     // define the indentation spacing format based on user CL options
     let indentation_str = get_indent_str(indent_with_space, indent_number);
