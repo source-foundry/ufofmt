@@ -1,5 +1,33 @@
 # Changelog
 
+## v0.7.1
+
+- Refactor unnecessary late assignment in `formatters::format_ufo` (clippy lint)
+- Dependency updates:
+  - clap v2.33.3 to v2.34.0
+  - crossbeam-channel from v0.5.1 to v0.5.2
+  - crossbeam-epoch from v0.8.5 to v0.8.6
+  - crossbeam-utils from v0.8.5 to v0.8.6
+  - getrandom from v0.2.3 to v0.2.4
+  - indexmap from v1.7.0 to v1.8.0
+  - libc from v0.2.102 to v0.2.115
+  - memoffset from v0.6.4 to v0.6.5
+  - plist v1.2.1 to v1.3.1
+  - proc_macro v1.0.29 to v1.0.36
+  - quote v1.0.9 to v1.0.15
+  - serde v1.0.130 to v1.0.136
+  - serde_derive from v1.0.130 to v1.0.136
+  - structopt v0.3.25 to v0.3.26
+  - syn from v1.0.76 to v1.0.86
+  - unicode-width from v0.1.8 to v0.1.9
+  - version_check from v0.9.3 to v0.9.4
+- New dependencies:
+  - itoa v1.0.1
+  - num_threads v0.1.3
+  - time v0.3.7
+- Removed dependencies:
+  - num-integer
+
 ## v0.7.0
 
 - Convert to f64 float value formatting for all numeric fields in the UFO specification that use floats
