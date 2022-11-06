@@ -15,18 +15,34 @@ lazy_static! {
 #[derive(Debug)]
 pub(crate) enum Error {
     InvalidPath(PathBuf),
-    NoradRead(PathBuf, norad::Error),
-    NoradWrite(PathBuf, norad::Error),
+    NoradRead(PathBuf, norad::error::FontLoadError),
+    NoradWrite(PathBuf, norad::error::FontWriteError),
+}
+
+// Implementation adapted from https://www.lpalmieri.com/posts/error-handling-rust/
+fn chained_error_fmt(
+    e: &impl std::error::Error,
+    f: &mut std::fmt::Formatter<'_>,
+) -> std::fmt::Result {
+    writeln!(f, "{}\n", e)?;
+    let mut current_err = e.source();
+    while let Some(err_cause) = current_err {
+        writeln!(f, "Caused by:\n\t{}", err_cause)?;
+        current_err = err_cause.source();
+    }
+    Ok(())
 }
 
 impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter) -> std::result::Result<(), fmt::Error> {
         match &self {
             Error::NoradRead(p, e) => {
-                write!(f, "norad read error: {}: {}", p.display(), e)
+                writeln!(f, "norad read error: {}", p.display())?;
+                chained_error_fmt(e, f)
             }
             Error::NoradWrite(p, e) => {
-                write!(f, "norad write error: {}: {}", p.display(), e)
+                writeln!(f, "norad write error: {}", p.display())?;
+                chained_error_fmt(e, f)
             }
             Error::InvalidPath(p) => {
                 write!(f, "invalid path error: {} was not found", p.display())
@@ -49,14 +65,14 @@ mod tests {
 
     #[test]
     fn test_ufofmterror_read() {
-        let ne = norad::Error::MissingLayer("test".to_owned());
+        let ne = norad::error::FontLoadError::MissingDefaultLayer;
         let ufe = Error::NoradRead(PathBuf::from("test.ufo"), ne);
         assert!(ufe.to_string().starts_with("norad read error: "));
     }
 
     #[test]
     fn test_ufofmterror_write() {
-        let ne = norad::Error::MissingLayer("test".to_owned());
+        let ne = norad::error::FontWriteError::PreexistingPublicObjectLibsKey;
         let ufe = Error::NoradWrite(PathBuf::from("test.ufo"), ne);
         assert!(ufe.to_string().starts_with("norad write error: "));
     }
