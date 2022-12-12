@@ -16,7 +16,7 @@ exclude = [
 ]
 
 [dependencies]
-norad = { version = "0.6.0", features = ["rayon"] }
+norad = { version = "0.8.0", features = ["rayon"] }
 structopt = "0.3"
 colored = "2.0"
 rayon = "1.5"
